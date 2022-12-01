@@ -1,0 +1,16 @@
+{
+    "characters": [
+        {
+            "name": "Dwarf",
+            "lifeMax": 100,
+            "life": 100,
+            "description": "A noble but strong dwarf."
+        },
+        {
+            "name": "Elf",
+            "lifeMax": 100,
+            "life": 100,
+            "description": "A malicious and beautiful elf."
+        }
+    ]
+}

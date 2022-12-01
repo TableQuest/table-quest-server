@@ -21,5 +21,6 @@ export default class TableQuestAPI {
             res.status(200)
                 .send(JSON.stringify(this.tableQuest.game.characters))
         });
-    }
+        
+    }   
 }

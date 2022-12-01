@@ -8,7 +8,10 @@ export default class Player {
     pawnCode: string;
     menuCode: string;
 
-    constructor() {
-        
+    constructor(id: number, socket: any, pawnCode: string, menuCode: string) {
+        this.id = id;
+        this.socket = socket;
+        this.pawnCode = pawnCode;
+        this.menuCode = menuCode;
     }
 }

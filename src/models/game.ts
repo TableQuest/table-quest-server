@@ -7,6 +7,7 @@ import Character from "./character";
 
 export default class Game {
 
+
     characters: Character[];
     players: Player[];
     mj: MJ;
@@ -52,6 +53,4 @@ export default class Game {
     addTable(socket: any) {
         this.table.socket = socket;
     }
-
-
 }

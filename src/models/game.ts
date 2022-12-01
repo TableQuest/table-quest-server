@@ -15,6 +15,7 @@ export default class Game {
     constructor() {
         this.players = [];
         this.characters = this.createCharacters();
+        this.mj = new MJ();
     }
 
     createCharacters(): Character[] {

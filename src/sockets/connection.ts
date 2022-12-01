@@ -25,6 +25,7 @@ export default class ConnectionSocket {
 
             socket.on('mjConnection', () => {
               console.log("MJ connected");
+              this.io.emit("mjConnection", "connecté au serveur");
               this.app.game.addMJ(socket);
             });
             

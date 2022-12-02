@@ -1,16 +1,17 @@
+import { Socket } from "socket.io";
+import { DefaultEventsMap } from "socket.io/dist/typed-events";
+import PlayerSocket from "../sockets/socket.player";
 import Character from "./character";
 
 export default class Player {
 
-    socket: any;
     id: number;
     charcater: Character;
     pawnCode: string;
     menuCode: string;
 
-    constructor(id: number, socket: any, pawnCode: string, menuCode: string) {
+    constructor(id: number, pawnCode: string, menuCode: string) {
         this.id = id;
-        this.socket = socket;
         this.pawnCode = pawnCode;
         this.menuCode = menuCode;
     }

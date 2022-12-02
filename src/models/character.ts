@@ -1,5 +1,6 @@
+import CharacterInterface from "./interfaces/CharacterInterface";
 
-export default class Character {
+export default class Character implements CharacterInterface{
 
     id: number;
     name: string;

@@ -1,12 +1,14 @@
 {
     "characters": [
-        {
+        {   
+            "id": 0,
             "name": "Dwarf",
             "lifeMax": 100,
             "life": 100,
             "description": "A noble but strong dwarf."
         },
         {
+            "id": 1,
             "name": "Elf",
             "lifeMax": 100,
             "life": 100,

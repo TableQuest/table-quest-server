@@ -1,13 +1,13 @@
 import { Express } from 'express'
-import { App } from '../server';
+import Game from '../models/game';
 
 export default class TableQuestAPI {
 
     app: Express;
-    tableQuest: App;
+    game: Game;
 
-    constructor(tableQuest: App ,app: Express) {
-        this.tableQuest = tableQuest
+    constructor(game: Game ,app: Express) {
+        this.game = game;
         this.app = app;
         this.defineRouting();
     }
@@ -19,7 +19,7 @@ export default class TableQuestAPI {
 
         this.app.get('/characters', (req, res) => {
             res.status(200)
-                .send(JSON.stringify(this.tableQuest.game.characters))
+                .send(JSON.stringify(this.game.characters))
         });
         
     }   

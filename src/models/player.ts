@@ -6,7 +6,7 @@ import Character from "./character";
 export default class Player {
 
     id: number;
-    charcater: Character;
+    character: Character;
     pawnCode: string;
     menuCode: string;
 

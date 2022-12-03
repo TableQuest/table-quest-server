@@ -37,8 +37,8 @@ export default class PlayerSocket {
              * Verification of the character ID.
              */
             if (character !== undefined) {
-                this.player.charcater = character;
-                console.log(`Update the character of the player ${this.player.id} with ${this.player.charcater.name} Successfully.`);
+                this.player.character = character;
+                console.log(`Update the character of the player ${this.player.id} with ${this.player.character.name} Successfully.`);
                 
                 /**
                  * Send request to the MJ only if he is connected to the server.
@@ -47,7 +47,7 @@ export default class PlayerSocket {
                 if (this.game.mjSocket.isEnable) {
                     this.game.mjSocket.socket.emit("characterSelection", {
                         "player": this.player.id,
-                        "characyer": JSON.stringify(this.player.charcater)
+                        "character": JSON.stringify(this.player.character)
                     });
                 }
             }

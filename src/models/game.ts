@@ -9,6 +9,7 @@ import TableSocket from "../sockets/socket.table";
 
 import gameJson from '../../data/game.json';
 import CharacterInterface from "./interfaces/CharacterInterface";
+import GameSocket from "../sockets/socket.game";
 
 /**
  * Main Controller of the Server. Contains the models and the devices` sockets.
@@ -24,6 +25,7 @@ export default class Game {
     playerSockets: PlayerSocket[];
     connectionSocket: ConnectionSocket;
     tableSocket: TableSocket;
+    gameSocket: GameSocket;
 
     /* REST API of the System. */
     api : TableQuestAPI;
@@ -39,6 +41,7 @@ export default class Game {
         this.playerSockets = [];
         this.connectionSocket = new ConnectionSocket(this, io);
         this.tableSocket = new TableSocket(this, io);
+        this.gameSocket = new GameSocket(this);
 
         /* API */
         this.api = new TableQuestAPI(this, express);

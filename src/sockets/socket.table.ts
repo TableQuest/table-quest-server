@@ -1,4 +1,5 @@
 import { Server, Socket } from "socket.io";
+import { DefaultEventsMap } from "socket.io/dist/typed-events";
 import Game from "../models/game";
 
 

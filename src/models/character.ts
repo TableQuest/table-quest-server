@@ -15,4 +15,8 @@ export default class Character implements CharacterInterface{
         this.life = life;
         this.description = description;
     }
+
+    setLife(life: number){
+        this.life = life;
+    }
 }

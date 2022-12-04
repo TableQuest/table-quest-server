@@ -43,12 +43,15 @@ export default class ConnectionSocket {
       socket.on('tableConnection', () => {
         console.log("Table connected");
         this.game.addTable(socket)
+        this.game.mjSocket.socket.emit("test", "testst");
       });
 
       /**
        * On Mobile detection provide the code of the Menu + the code of the Pawn
        */
-      socket.on('playerConnection', (json) => {
+      socket.on('playerConnection', (msg) => {
+        let json = JSON.parse(msg);
+        
         if (json.menuCode !== undefined && json.pawnCode !== undefined) {
 
           let playerId = json.menuCode+json.pawnCode
@@ -72,7 +75,7 @@ export default class ConnectionSocket {
             this.game.updatePlayerSocket(socket, playerId)
           }
         } else {
-        console.error("Bad Request json not correct, please give a valid json (menuCode) + (pawnCode)");
+        console.error("Bad Request json not correct, please give a valid json (menuCode) + (pawnCode) "+ json);
         }
       });
     });

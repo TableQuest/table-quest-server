@@ -26,5 +26,17 @@ export default class MJSocket {
     initWebSocket(socket: Socket) {
         this.socket = socket;
         this.isEnable = true;
+
+        /**
+         * When the mj remove life from the character: 
+         *  - update the character on the model 
+         *  - emit the change to the mj
+         *  - emit the change to the player connected to the character
+         */
+        this.socket.on("updateLifeCharacter", (data) =>{
+            let json = JSON.parse(data);
+            this.game.gameSocket.updatePlayerLife(json.id, json.life);
+
+        })
     }
 }

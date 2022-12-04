@@ -6,4 +6,6 @@ export default interface CharacterInterface {
     lifeMax: number;
     life: number;
     description: string;
+
+    setLife(life: number):void;
 }

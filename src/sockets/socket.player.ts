@@ -47,7 +47,7 @@ export default class PlayerSocket {
                 if (this.game.mjSocket.isEnable) {
                     this.game.mjSocket.socket.emit("characterSelection", {
                         "player": this.player.id,
-                        "character": JSON.stringify(this.player.character)
+                        "character": this.player.character
                     });
                 }
             }

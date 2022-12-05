@@ -10,12 +10,23 @@ export default class GameSocket{
         this.game = game;
     }
 
+    /**
+     * When the mj remove life from the character: 
+     *  - update the character on the model 
+     *  - emit the change to the mj
+     *  - emit the change to the player connected to the character
+     */
     public updatePlayerLife(id:number, life:number){
         let playerSocket = this.game.playerSockets.find(p => p.player.character.id === id);
         playerSocket!.player.character.life = life;
-        console.log("New player life");
-        console.log(playerSocket!.player.character.life);
-        //this.game.mjSocket.socket.emit("updateLifePlayer",{ id:id, life:life});
-        //playerSocket?.socket.emit("up") 
+        console.log("Player "+playerSocket!.player.character.name+" has "+playerSocket!.player.character.life+" points of life");
+        // send to the mj
+        this.game.mjSocket.socket.emit("updateLifeCharacter",{ id:id, life:life});
+
+        // send to the player connected to the character 
+        //playerSocket?.socket.emit("updateLifeCharacter", {life: life});
+
+        // send to the table 
+        //this.game.tableSocket.socket.emit("updateLifeCharacter",{id:id, life:life});
     }
 }

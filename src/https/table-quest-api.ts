@@ -24,5 +24,12 @@ export default class TableQuestAPI {
                 .send(JSON.stringify(characters))
         });
         
+        this.app.get('/characters/:id', (req, res) => {
+            let id = +req.params.id;
+            let character = this.game.characters.find(c => c.id === id);
+            res.status(200)
+                .send(JSON.stringify(character));
+        });
+
     }   
 }

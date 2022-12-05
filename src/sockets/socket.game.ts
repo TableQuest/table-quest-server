@@ -24,8 +24,8 @@ export default class GameSocket{
         this.game.mjSocket.socket.emit("updateLifeCharacter",{ id:id, life:life});
 
         // send to the player connected to the character 
-        //playerSocket?.socket.emit("updateLifeCharacter", {life: life});
-
+        playerSocket?.socket.emit("updateLifePlayer", ""+life);
+        
         // send to the table 
         //this.game.tableSocket.socket.emit("updateLifeCharacter",{id:id, life:life});
     }

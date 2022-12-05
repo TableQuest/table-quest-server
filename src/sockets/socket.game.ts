@@ -16,6 +16,6 @@ export default class GameSocket{
         console.log("New player life");
         console.log(playerSocket!.player.character.life);
         //this.game.mjSocket.socket.emit("updateLifePlayer",{ id:id, life:life});
-        //playerSocket?.socket.emit("up") 
+        playerSocket?.socket.emit("updateLifePlayer", ""+life); 
     }
 }

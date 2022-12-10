@@ -33,5 +33,9 @@ export default class MJSocket {
             this.game.gameSocket.updatePlayerLife(json.id, json.life);
             this.socket.emit("updateLifeCharacter", )
         })
+
+        this.socket.on("switchStatePlaying", () => {
+            this.game.tableSocket.socket.emit("switchStatePlaying", "");
+        })
     }
 }

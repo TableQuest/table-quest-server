@@ -43,7 +43,6 @@ export default class ConnectionSocket {
       socket.on('tableConnection', () => {
         console.log("Table connected");
         this.game.addTable(socket)
-        this.game.mjSocket.socket.emit("test", "testst");
       });
 
       /**
@@ -74,8 +73,11 @@ export default class ConnectionSocket {
             console.log(`The player ${playerId} already exists, updated the socket ${socket.id} successfully.`);
             this.game.updatePlayerSocket(socket, playerId)
           }
+
+          this.game.tableSocket.socket.emit("playerConnection", playerId);
+
         } else {
-        console.error("Bad Request json not correct, please give a valid json (menuCode) + (pawnCode) "+ json);
+          console.error("Bad Request json not correct, please give a valid json (menuCode) + (pawnCode) "+ json);
         }
       });
     });

@@ -74,7 +74,7 @@ export default class ConnectionSocket {
             this.game.updatePlayerSocket(socket, playerId)
           }
 
-          this.game.tableSocket.socket.emit("playerConnection", playerId);
+          //this.game.tableSocket.socket.emit("playerConnection", playerId);
 
         } else {
           console.error("Bad Request json not correct, please give a valid json (menuCode) + (pawnCode) "+ json);

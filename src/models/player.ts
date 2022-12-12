@@ -5,12 +5,12 @@ import Character from "./character";
 
 export default class Player {
 
-    id: number;
+    id: string;
     character: Character;
     pawnCode: string;
     menuCode: string;
 
-    constructor(id: number, pawnCode: string, menuCode: string) {
+    constructor(id: string, pawnCode: string, menuCode: string) {
         this.id = id;
         this.pawnCode = pawnCode;
         this.menuCode = menuCode;

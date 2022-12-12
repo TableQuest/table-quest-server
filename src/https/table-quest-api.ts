@@ -35,11 +35,12 @@ export default class TableQuestAPI {
         });
 
         this.app.get('/inGameCharacters', (req, res) => {
-            let characterList =new Array<Character>;
+            let characterList =new Array<Object>;
             this.game.playerSockets.forEach(function(p){
                 if (p.player.character != null){
                     let cObj = JSON.stringify(p.player.character);
-                    characterList.push(p.player.character);
+
+                    characterList.push({"playerId": p.player.id ,"characterInfo":p.player.character});
                 }
             })
             let charactersObj = {"characterList": characterList};

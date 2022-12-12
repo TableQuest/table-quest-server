@@ -49,8 +49,7 @@ export default class ConnectionSocket {
        * On Mobile detection provide the code of the Menu + the code of the Pawn
        */
       socket.on('playerConnection', (msg) => {
-        let json = JSON.parse(JSON.stringify(msg));
-        
+        let json = JSON.parse(msg);
         if (json.menuCode !== undefined && json.pawnCode !== undefined) {
 
           let playerId = json.menuCode+json.pawnCode

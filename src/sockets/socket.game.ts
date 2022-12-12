@@ -16,8 +16,8 @@ export default class GameSocket{
      *  - emit the change to the mj
      *  - emit the change to the player connected to the character
      */
-    public updatePlayerLife(id:number, life:number){
-        let playerSocket = this.game.playerSockets.find(p => p.player.character.id === id);
+    public updatePlayerLife(id:string, life:number){
+        let playerSocket = this.game.playerSockets.find(p => p.player.id === id);
         playerSocket!.player.character.life = life;
         console.log("Player "+playerSocket!.player.character.name+" has "+playerSocket!.player.character.life+" points of life");
         // send to the mj

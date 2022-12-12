@@ -64,7 +64,7 @@ export default class Game {
         this.tableSocket.initWebSocket(socket);
     }
 
-    isPlayerExist(playerId: any) {
+    isPlayerExist(playerId: string) {
         let playerExists = false;
 
         this.playerSockets.forEach(playerSocket => {
@@ -76,7 +76,7 @@ export default class Game {
         return playerExists;
     }
 
-    updatePlayerSocket(socket: Socket, playerId: any) {
+    updatePlayerSocket(socket: Socket, playerId: string) {
         this.playerSockets.forEach(playerSocket => {
             if (playerSocket.player.id === playerId) {
                 playerSocket.initWebSocket(socket);

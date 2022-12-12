@@ -15,7 +15,7 @@ export default class PlayerSocket {
     io: Server;
     isEnable: boolean;
 
-    constructor(game: Game, id: number, pawnCode: string, menuCode: string, io: Server) {
+    constructor(game: Game, id: string, pawnCode: string, menuCode: string, io: Server) {
         this.game = game;
         this.io = io;
         this.isEnable = false;

@@ -22,5 +22,16 @@ export default class TableSocket {
     initWebSocket(socket: Socket) {
         this.socket = socket;
         this.isEnable = true;
+
+
+        this.socket.on("attackPlayer", (data) =>{
+            let json = JSON.parse(data);
+            console.log(json);
+            this.game.gameSocket.updatePlayerLife(json.id, json.life);
+        })
+
+        this.socket.on("debugMessage", (data) =>{
+            console.log(data);
+        })
     }
 }

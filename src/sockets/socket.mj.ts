@@ -1,5 +1,5 @@
-import { Server, Socket } from "socket.io";
-import Game from "../models/game";
+import {Server, Socket} from "socket.io";
+import Game, {GameState} from "../models/game";
 import MJ from "../models/mj";
 
 
@@ -7,7 +7,7 @@ import MJ from "../models/mj";
  * Handle events coming from the MJ`s device.
  */
 export default class MJSocket {
-    
+
     game: Game;
     isEnable: boolean;
     io: Server;
@@ -22,25 +22,41 @@ export default class MJSocket {
 
         this.mj = new MJ();
     }
-    
+
     initWebSocket(socket: Socket) {
         this.socket = socket;
         this.isEnable = true;
 
         /**
-         * When the mj remove life from the character: 
-         *  - update the character on the model 
+         * When the mj remove life from the character:
+         *  - update the character on the model
          *  - emit the change to the mj
          *  - emit the change to the player connected to the character
          */
         this.socket.on("updateLifeCharacter", (data) =>{
-            let json = JSON.parse(data);
-            this.game.gameSocket.updatePlayerLife(json.id, json.life);
-
+            if (!this.game.verifyGameState(GameState.INIT)) {
+                let json = JSON.parse(data);
+                this.game.gameSocket.updatePlayerLife(json.id, json.life);
+            }
+            else {
+                console.log("Cannot change characters' life if the game hasn't started.");
+            }
         })
 
-        this.socket.on("switchStatePlaying", () => {
-            this.game.tableSocket.socket.emit("switchStatePlaying", "");
+        this.socket.on("switchState", (data) => {
+            switch (data) {
+                case "PLAYING":
+                    this.game.updateGameState(GameState.PLAYING);
+                    this.game.tableSocket.socket.emit("switchStatePlaying", "");
+                    break;
+                case "RESTRICTED":
+                    this.game.updateGameState(GameState.RESTRICTED);
+                    this.game.tableSocket.socket.emit("switchStateRestricted", ""); //doesn't exist yet on table client-side, but it's here as an example
+                    break;
+                default:
+                    console.log(`State ${data} not recognized.`);
+            }
+            console.log(`GameState is now ${GameState[this.game.gameState]}`);
         })
     }
 }

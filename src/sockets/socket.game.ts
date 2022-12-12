@@ -3,7 +3,7 @@ import Game from "../models/game";
 import Player from "../models/player";
 
 export default class GameSocket{
-    
+
     game: Game;
 
     constructor(game: Game){
@@ -11,11 +11,17 @@ export default class GameSocket{
     }
 
     public updatePlayerLife(id:number, life:number){
-        let playerSocket = this.game.playerSockets.find(p => p.player.character.id === id);
+        let playerSocket = this.game.playerSockets.find(p => p.player.id === id);
         playerSocket!.player.character.life = life;
-        console.log("New player life");
-        console.log(playerSocket!.player.character.life);
-        //this.game.mjSocket.socket.emit("updateLifePlayer",{ id:id, life:life});
-        playerSocket?.socket.emit("updateLifePlayer", ""+life); 
+        console.log(`Player ${playerSocket!.player.id}'s life: ${playerSocket!.player.character.life}`);
+        playerSocket?.socket.emit("updateLifePlayer", ""+life);
     }
+    //
+    // useSkill(playerId: string, skillId: number, targetId: string) {
+    //     let playerSocket = this.findPlayerSocket(playerId);
+    // }
+    //
+    // findPlayerSocket(id: string) {
+    //     return this.game.playerSockets.find(p => p.player.id === id);
+    // }
 }

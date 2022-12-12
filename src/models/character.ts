@@ -1,4 +1,6 @@
 import CharacterInterface from "./interfaces/CharacterInterface";
+import Skill from "./skill";
+import SkillInterface from "./interfaces/SkillInterface";
 
 export default class Character implements CharacterInterface{
 
@@ -6,17 +8,25 @@ export default class Character implements CharacterInterface{
     name: string;
     lifeMax: number;
     life: number;
+    manaMax: number;
+    mana: number;
     description: string;
+    skills: SkillInterface[];
 
-    constructor(id: number, name: string, lifeMax: number, life: number, description: string) {
+    constructor(id: number, name: string, lifeMax: number, life: number,manaMax: number, mana: number, description: string, skills: SkillInterface[]) {
         this.id = id;
         this.name = name;
         this.lifeMax = lifeMax;
         this.life = life;
         this.description = description;
+        this.skills = skills;
     }
 
     setLife(life: number){
         this.life = life;
+    }
+
+    setMana(mana: number){
+        this.mana = mana;
     }
 }

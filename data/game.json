@@ -11,7 +11,7 @@
             "id": 1,
             "name": "Elf",
             "lifeMax": 100,
-            "life": 100,
+            "life": 100, 
             "description": "A malicious and beautiful elf."
         }
     ]

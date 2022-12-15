@@ -33,7 +33,7 @@ export default class TableSocket {
             let playerId = json.playerId;
             let skillId = json.skillId;
             let targetId = json.targetId;
-            //this.game.gameSocket.useSkill(playerId, skillId, targetId);
+            this.game.gameSocket.useSkill(playerId, skillId, targetId);
         })
     }
 }

@@ -33,7 +33,6 @@ export default class MJSocket {
             if (!this.game.verifyGameState(GameState.INIT)) {
                 let json = JSON.parse(data);
                 this.game.gameSocket.updatePlayerLife(json.id, json.life);
-                this.socket.emit("updateLifeCharacter", )
             }
             else {
                 console.log("Cannot change characters' life if the game hasn't started.");

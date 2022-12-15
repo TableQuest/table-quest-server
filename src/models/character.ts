@@ -22,11 +22,20 @@ export default class Character implements CharacterInterface{
         this.skills = skills;
     }
 
+    isSkillUsable(skillId: number) {
+        let skill = this.getSkill(skillId);
+        return skill!.manaCost <= this.mana;
+    }
+
     setLife(life: number){
         this.life = life;
     }
 
     setMana(mana: number){
         this.mana = mana;
+    }
+
+    getSkill(skillId: number) {
+        return this.skills.find(s => s.id == skillId);
     }
 }

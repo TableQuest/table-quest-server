@@ -34,6 +34,15 @@ export default class TableSocket {
             let skillId = json.skillId;
             let targetId = json.targetId;
             this.game.gameSocket.useSkill(playerId, skillId, targetId);
+
+        this.socket.on("attackPlayer", (data) =>{
+            let json = JSON.parse(data);
+            console.log(json);
+            this.game.gameSocket.updatePlayerLife(json.id, json.life);
+        })
+
+        this.socket.on("debugMessage", (data) =>{
+            console.log(data);
         })
     }
 }

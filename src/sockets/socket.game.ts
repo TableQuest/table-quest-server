@@ -26,7 +26,7 @@ export default class GameSocket{
         playerSocket!.player.character.life = life;
         console.log("Player "+playerSocket!.player.character.name+" has "+playerSocket!.player.character.life+" points of life");
         // send to the mj
-        this.game.mjSocket.socket.emit("updateLifeCharacter",{ id:id, life:life});
+        this.game.mjSocket.socket.emit("updateCharacter",{ id:id, life:life, mana: playerSocket!.player.character.mana});
 
         // send to the player connected to the character
         playerSocket?.socket.emit("updateLifePlayer", ""+life);
@@ -48,16 +48,16 @@ export default class GameSocket{
 
         if (this.isSkillUsable(playerCharacter, skill, targetId)) {
             this.applySkill(playerCharacter, skill!, targetId);
-            //TODO create a global updateCharacter message
-            this.sendToSockets("updateLifeCharacter", {id:targetId, life:targetSocket!.player.character.life},
+
+            this.sendToSockets("updateCharacter", {id:targetId, life:targetSocket!.player.character.life, mana:targetSocket!.player.character.mana},
                 [this.game.mjSocket.socket]);
-            this.sendToSockets("updateManaCharacter", {id:targetId, mana:playerSocket!.player.character.mana},
+            this.sendToSockets("updateCharacter", {id:targetId, life:playerSocket!.player.character.life,  mana:playerSocket!.player.character.mana},
                 [this.game.mjSocket.socket]);
         }
     }
 
     /*
-    Checks if the skill is defined, is the target exists and if the player has enough mana left. Returns true if so,
+    Checks if the skill is defined, if the target exists and if the player has enough mana left. Returns true if so,
     false otherwise.
     Sends an error message to the table socket and the MJ socket if the skill is undefined.
      */

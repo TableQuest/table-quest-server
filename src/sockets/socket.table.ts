@@ -32,6 +32,7 @@ export default class TableSocket {
          */
         this.socket.on("useSkill", (data) => {
             let json = JSON.parse(data);
+            console.log(`Received "useSkill" with ${json.playerId}, ${json.skillId}, ${json.targetId}.`)
             this.game.gameSocket.tryUsingSkill(json.playerId, json.skillId, json.targetId);
         })
 

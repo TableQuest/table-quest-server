@@ -28,10 +28,15 @@ export default class TableSocket {
             let json = JSON.parse(data);
             console.log(json);
             this.game.gameSocket.updatePlayerLife(json.id, json.life);
-        })
+        });
 
         this.socket.on("debugMessage", (data) =>{
             console.log(data);
+        });
+
+        this.socket.on("playerMove", (data) => {
+            console.log("Movement of player id : " + data);
+            this.socket.emit("playerMove", {"playerId": data, "speed": this.game.gameSocket.getPlayerSpeed(data)});
         })
     }
 }

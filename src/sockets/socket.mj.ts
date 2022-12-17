@@ -37,5 +37,16 @@ export default class MJSocket {
         this.socket.on("switchStatePlaying", () => {
             this.game.tableSocket.socket.emit("switchStatePlaying", "");
         })
+
+        this.socket.on("switchStateConstraint", () => {
+            this.game.tableSocket.socket.emit("switchStateConstraint", "");
+        })
+        
+        this.socket.on("playerMove", (data) => {
+            console.log("Send to table move");
+            
+            this.game.tableSocket.socket.emit("playerMove", data);
+
+        })
     }
 }

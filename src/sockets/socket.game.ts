@@ -3,7 +3,7 @@ import Game from "../models/game";
 import Player from "../models/player";
 
 export default class GameSocket{
-    
+
     game: Game;
 
     constructor(game: Game){
@@ -17,6 +17,7 @@ export default class GameSocket{
      *  - emit the change to the player connected to the character
      */
     public updatePlayerLife(id:string, life:number){
+        
         let playerSocket = this.game.playerSockets.find(p => p.player.id === id);
         playerSocket!.player.character.life = life;
         console.log("Player "+playerSocket!.player.character.name+" has "+playerSocket!.player.character.life+" points of life");
@@ -29,4 +30,11 @@ export default class GameSocket{
         // send to the table 
         //this.game.tableSocket.socket.emit("updateLifeCharacter",{id:id, life:life});
     }
+
+    getPlayerSpeed(data: string): number {
+        let playerSocket = this.game.playerSockets.find(p => p.player.id === data);
+        return playerSocket?.player.character.speed!;
+    }
+    
+    
 }

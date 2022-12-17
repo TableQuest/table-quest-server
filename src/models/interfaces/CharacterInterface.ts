@@ -14,6 +14,6 @@ export default interface CharacterInterface {
     setLife(life: number):void;
     setMana(mana: number):void;
 
-    isSkillUsable(skillId: number): boolean;
+    hasEnoughMana(skill: SkillInterface): boolean;
     getSkill(skillId: number): SkillInterface | undefined;
 }

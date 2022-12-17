@@ -9,9 +9,9 @@ export default class Skill implements SkillInterface {
     maxTarget: number;
     type: string;
     statModifier: number;
+    healing: boolean;
+    image: string;
 
     applyEffect(target: Character)
-    {
-
-    }
+    {}
 }

@@ -22,8 +22,7 @@ export default class Character implements CharacterInterface{
         this.skills = skills;
     }
 
-    isSkillUsable(skillId: number) {
-        let skill = this.getSkill(skillId);
+    hasEnoughMana(skill: SkillInterface) {
         return skill!.manaCost <= this.mana;
     }
 

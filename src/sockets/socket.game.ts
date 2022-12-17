@@ -4,6 +4,8 @@ import Player from "../models/player";
 import {Socket} from "socket.io";
 import SkillInterface from "../models/interfaces/SkillInterface";
 import CharacterInterface from "../models/interfaces/CharacterInterface";
+import PlayerSocket from "./socket.player";
+import Skill from "../models/skill";
 
 export default class GameSocket{
 
@@ -33,34 +35,53 @@ export default class GameSocket{
         //this.game.tableSocket.socket.emit("updateLifeCharacter",{id:id, life:life});
     }
 
-    useSkill(playerId: string, skillId: number, targetId: string) {
-        let playerSocket = this.findPlayerSocket(playerId);
+    tryUsingSkill(playerId: string, skillId: number, targetId: string) {
+        let playerSocket = this.game.gameSocket.findPlayerSocket(playerId);
         let playerCharacter = playerSocket!.player.character;
         let skill = playerCharacter.getSkill(skillId);
+        let targetSocket = this.findPlayerSocket(targetId);
 
-        if (skill == undefined) {
-            let errorMessage = `Character ${playerCharacter.id} does not have skill ${skillId}.`;
-            console.log(errorMessage);
-            this.sendToSockets("errorMessage", errorMessage, [this.game.tableSocket.socket, this.game.mjSocket.socket]);
-            return;
-        }
-
-        //TODO check if target exists once NPCs are done, using a player for now
-        if (playerCharacter.isSkillUsable(skillId))
-        {
-            this.applySkill(playerCharacter, skill, targetId);
+        if (this.isSkillUsable(playerCharacter, skill!, targetId)) {
+            this.applySkill(playerCharacter, skill!, targetId);
+            //TODO create a global updateCharacter message
+            this.sendToSockets("updateLifeCharacter", {id:targetId, life:targetSocket!.player.character.life},
+                [this.game.mjSocket.socket]);
+            this.sendToSockets("updateManaCharacter", {id:targetId, mana:playerSocket!.player.character.mana},
+                [this.game.mjSocket.socket]);
         }
     }
 
-    applySkill(caster: CharacterInterface, skill: SkillInterface, targetId: string) {
+    isSkillUsable(playerCharacter: CharacterInterface, skill: SkillInterface, targetId: string) {
+        if (skill == undefined) {
+            let errorMessage = `Character ${playerCharacter.id} does not have that skill.`;
+            console.log(errorMessage);
+            this.sendToSockets("errorMessage", errorMessage, [this.game.tableSocket.socket, this.game.mjSocket.socket]);
+            return false;
+        }
 
+        //TODO check if target exists once NPCs are done, using a player for now
+        //TODO check skill range
+        return (this.game.isPlayerExist(targetId) && playerCharacter.hasEnoughMana(skill))
+    }
+
+    applySkill(caster: CharacterInterface, skill: SkillInterface, targetId: string) {
+        caster.mana -= skill.manaCost;
+        let targetCharacter = this.game.getPlayer(targetId)!.character;
+
+        //could be moved to Skill class, not sure as it would make it more annoying to read
+        if (skill.healing) {
+            targetCharacter.life += skill.statModifier;
+        }
+        else {
+            targetCharacter.life -= skill.statModifier;
+        }
     }
 
     findPlayerSocket(id: string) {
         return this.game.playerSockets.find(p => p.player.id === id);
     }
 
-    public sendToSockets(message: string, data: string, sockets: Socket[]) {
+    public sendToSockets(message: string, data: any, sockets: Socket[]) {
         for (let socket of sockets) {
             socket.emit(message, data);
         }

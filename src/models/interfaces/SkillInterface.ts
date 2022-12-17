@@ -13,6 +13,8 @@ export default interface SkillInterface {
     maxTarget: number;
     type: string;
     statModifier: number;
+    healing: boolean;
+    image: string;
 
     applyEffect(target: Character): void;
 }

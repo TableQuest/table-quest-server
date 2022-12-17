@@ -16,7 +16,9 @@
                     "range": 1,
                     "maxTarget": 1,
                     "type": "PHYSICAL",
-                    "statModifier": 3
+                    "statModifier": 3,
+                    "healing": false,
+                    "prefab": "Images/Axe"
                 },
                 {
                     "id": 1,
@@ -25,7 +27,9 @@
                     "range": 4,
                     "maxTarget": 4,
                     "type": "PHYSICAL",
-                    "statModifier": 0
+                    "statModifier": 0,
+                    "healing": false,
+                    "prefab": "Images/EarthQuake"
                 },
                 {
                     "id": 2,
@@ -34,7 +38,9 @@
                     "range": 1,
                     "maxTarget": 1,
                     "type": "MENTAL",
-                    "statModifier": 2
+                    "statModifier": 2,
+                    "healing": true,
+                    "prefab": "Images/Healing"
                 }
             ]
         },
@@ -54,7 +60,9 @@
                     "range": 1,
                     "maxTarget": 1,
                     "type": "PHYSICAL",
-                    "statModifier": 2
+                    "statModifier": 2,
+                    "healing": false,
+                    "prefab": "Images/Dagger"
                 },
                 {
                     "id": 4,
@@ -63,7 +71,9 @@
                     "range": 10,
                     "maxTarget": 1,
                     "type": "PHYSICAL",
-                    "statModifier": 1
+                    "statModifier": 1,
+                    "healing": false,
+                    "prefab": "Images/Bow"
                 },
                 {
                     "id": 5,
@@ -72,7 +82,9 @@
                     "range": 1,
                     "maxTarget": 1,
                     "type": "MENTAL",
-                    "statModifier": 2
+                    "statModifier": 2,
+                    "healing": true,
+                    "image": "Images/Healing"
                 }
             ]
         }

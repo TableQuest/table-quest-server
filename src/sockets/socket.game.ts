@@ -35,13 +35,18 @@ export default class GameSocket{
         //this.game.tableSocket.socket.emit("updateLifeCharacter",{id:id, life:life});
     }
 
+    /*
+    Calls the function to check if the skill can be used and if so, calls the function to use it. Then it sends a message
+    to update the character's stats to the MJ socket.
+    Is called upon receiving the message "useSkill" from the Table socket.
+     */
     tryUsingSkill(playerId: string, skillId: number, targetId: string) {
         let playerSocket = this.game.gameSocket.findPlayerSocket(playerId);
         let playerCharacter = playerSocket!.player.character;
         let skill = playerCharacter.getSkill(skillId);
         let targetSocket = this.findPlayerSocket(targetId);
 
-        if (this.isSkillUsable(playerCharacter, skill!, targetId)) {
+        if (this.isSkillUsable(playerCharacter, skill, targetId)) {
             this.applySkill(playerCharacter, skill!, targetId);
             //TODO create a global updateCharacter message
             this.sendToSockets("updateLifeCharacter", {id:targetId, life:targetSocket!.player.character.life},
@@ -51,7 +56,12 @@ export default class GameSocket{
         }
     }
 
-    isSkillUsable(playerCharacter: CharacterInterface, skill: SkillInterface, targetId: string) {
+    /*
+    Checks if the skill is defined, is the target exists and if the player has enough mana left. Returns true if so,
+    false otherwise.
+    Sends an error message to the table socket and the MJ socket if the skill is undefined.
+     */
+    isSkillUsable(playerCharacter: CharacterInterface, skill: SkillInterface | undefined, targetId: string) {
         if (skill == undefined) {
             let errorMessage = `Character ${playerCharacter.id} does not have that skill.`;
             console.log(errorMessage);
@@ -64,6 +74,9 @@ export default class GameSocket{
         return (this.game.isPlayerExist(targetId) && playerCharacter.hasEnoughMana(skill))
     }
 
+    /*
+    Affects the player and target's stats depending on the stats of the skill.
+     */
     applySkill(caster: CharacterInterface, skill: SkillInterface, targetId: string) {
         caster.mana -= skill.manaCost;
         let targetCharacter = this.game.getPlayer(targetId)!.character;

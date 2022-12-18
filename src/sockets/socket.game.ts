@@ -2,7 +2,6 @@ import Game from "../models/game";
 import {Socket} from "socket.io";
 import SkillInterface from "../models/interfaces/SkillInterface";
 import CharacterInterface from "../models/interfaces/CharacterInterface";
-import Character from "../models/character";
 export default class GameSocket{
 
     game: Game;

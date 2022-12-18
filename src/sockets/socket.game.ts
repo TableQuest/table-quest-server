@@ -44,9 +44,10 @@ export default class GameSocket{
         if (this.isSkillUsable(playerCharacter, skill, targetId)) {
             this.applySkill(playerCharacter, skill!, targetId);
 
-            this.sendToSockets("updateCharacter", {id:targetId, life:targetSocket!.player.character.life, mana:targetSocket!.player.character.mana},
+            // 
+            this.sendToSockets("updateInfoCharacter", {playerId:targetId, variable:"life", value:targetSocket!.player.character.life},
                 [this.game.mjSocket.socket, targetSocket!.socket]);
-            this.sendToSockets("updateCharacter", {id:targetId, life:playerSocket!.player.character.life,  mana:playerSocket!.player.character.mana},
+            this.sendToSockets("updateInfoCharacter", {playerId:playerId, variable:"mana", value:playerSocket!.player.character.mana},
                 [this.game.mjSocket.socket, playerSocket!.socket]);
         }
     }

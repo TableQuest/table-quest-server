@@ -47,7 +47,7 @@ export default class Game {
         this.characters = new Array();
         for (let i=0; i<gameJson.characters.length; i++){
             let c = <Character>JSON.parse(JSON.stringify(gameJson.characters[i]))
-            let objC :Character = new Character(c.id, c.name, c.lifeMax, c.life, c.manaMax, c.mana, c.description, c.skills);
+            let objC :Character = new Character(c.id, c.name, c.lifeMax, c.life, c.manaMax, c.mana, c.description, c.speed, c.skills);
             this.characters.push(objC);
         }
 

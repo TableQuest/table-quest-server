@@ -2,8 +2,6 @@ import { Express } from 'express'
 import Game from '../models/game';
 
 import characters from '../../data/game.json'
-import Player from '../models/player'
-import Character from '../models/character'
 
 
 export default class TableQuestAPI {

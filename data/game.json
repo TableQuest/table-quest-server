@@ -18,7 +18,7 @@
                     "type": "PHYSICAL",
                     "statModifier": 3,
                     "healing": false,
-                    "prefab": "Images/Axe"
+                    "image": "Images/Axe"
                 },
                 {
                     "id": 1,
@@ -29,7 +29,7 @@
                     "type": "PHYSICAL",
                     "statModifier": 0,
                     "healing": false,
-                    "prefab": "Images/EarthQuake"
+                    "image": "Images/EarthQuake"
                 },
                 {
                     "id": 2,
@@ -40,7 +40,7 @@
                     "type": "MENTAL",
                     "statModifier": 2,
                     "healing": true,
-                    "prefab": "Images/Healing"
+                    "image": "Images/Healing"
                 }
             ]
         },
@@ -62,7 +62,7 @@
                     "type": "PHYSICAL",
                     "statModifier": 2,
                     "healing": false,
-                    "prefab": "Images/Dagger"
+                    "image": "Images/Dagger"
                 },
                 {
                     "id": 4,
@@ -73,7 +73,7 @@
                     "type": "PHYSICAL",
                     "statModifier": 1,
                     "healing": false,
-                    "prefab": "Images/Bow"
+                    "image": "Images/Bow"
                 },
                 {
                     "id": 5,

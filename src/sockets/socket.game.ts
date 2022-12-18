@@ -1,11 +1,7 @@
-import { json } from "stream/consumers";
 import Game from "../models/game";
-import Player from "../models/player";
 import {Socket} from "socket.io";
 import SkillInterface from "../models/interfaces/SkillInterface";
 import CharacterInterface from "../models/interfaces/CharacterInterface";
-import PlayerSocket from "./socket.player";
-import Skill from "../models/skill";
 
 export default class GameSocket{
 
@@ -50,9 +46,9 @@ export default class GameSocket{
             this.applySkill(playerCharacter, skill!, targetId);
 
             this.sendToSockets("updateCharacter", {id:targetId, life:targetSocket!.player.character.life, mana:targetSocket!.player.character.mana},
-                [this.game.mjSocket.socket]);
+                [this.game.mjSocket.socket, targetSocket!.socket]);
             this.sendToSockets("updateCharacter", {id:targetId, life:playerSocket!.player.character.life,  mana:playerSocket!.player.character.mana},
-                [this.game.mjSocket.socket]);
+                [this.game.mjSocket.socket, playerSocket!.socket]);
         }
     }
 

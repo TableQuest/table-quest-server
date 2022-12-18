@@ -1,4 +1,4 @@
-import SkillInterface, {StatType} from "./interfaces/SkillInterface";
+import SkillInterface from "./interfaces/SkillInterface";
 import Character from "./character";
 
 export default class Skill implements SkillInterface {
@@ -9,9 +9,9 @@ export default class Skill implements SkillInterface {
     maxTarget: number;
     type: string;
     statModifier: number;
+    healing: boolean;
+    image: string;
 
     applyEffect(target: Character)
-    {
-
-    }
+    {}
 }

@@ -26,15 +26,15 @@ export default class TableSocket {
 
         /*
         When a player did all the steps to use a skill on the table, it sends a message to the server with the player ID,
-        the skill ID and the target ID. Just like updatePlayerLife, the job is given to the gameSocket which will look
-        up the player, to get the character and then the skill in order to get all the necessary info.
+        the skill ID and the target ID. The task is given to the gameSocket which will do all the verifications, will
+        trigger or not the skill and will emit the messages accordingly.
+
+         Json must contain a playerId as a string, a skillId as an int, and a targetId as a string.
          */
         this.socket.on("useSkill", (data) => {
             let json = JSON.parse(data);
-            let playerId = json.playerId;
-            let skillId = json.skillId;
-            let targetId = json.targetId;
-            this.game.gameSocket.useSkill(playerId, skillId, targetId);
+            console.log(`Received "useSkill" with ${json.playerId}, ${json.skillId}, ${json.targetId}.`)
+            this.game.gameSocket.tryUsingSkill(json.playerId, json.skillId, json.targetId);
         })
 
         this.socket.on("attackPlayer", (data) =>{
@@ -45,6 +45,11 @@ export default class TableSocket {
 
         this.socket.on("debugMessage", (data) =>{
             console.log(data);
+        });
+
+        this.socket.on("playerMove", (data) => {
+            console.log("Movement of player id : " + data);
+            this.socket.emit("playerMove", JSON.stringify({"playerId": data, "speed": 2}));
         })
     }
 }

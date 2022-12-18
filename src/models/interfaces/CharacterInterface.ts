@@ -9,6 +9,7 @@ export default interface CharacterInterface {
     manaMax: number;
     mana: number;
     description: string;
+    speed: number
     skills: SkillInterface[];
 
     setLife(life: number):void;
@@ -16,7 +17,7 @@ export default interface CharacterInterface {
     setMana(mana: number):void;
     setManaMax(manaMax: number):void;
 
-    isSkillUsable(skillId: number): boolean;
+    hasEnoughMana(skill: SkillInterface): boolean;
     getSkill(skillId: number): SkillInterface | undefined;
 
     updateInfo(variable: string, value: string):void;

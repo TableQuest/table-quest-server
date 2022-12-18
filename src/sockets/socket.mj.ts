@@ -42,31 +42,31 @@ export default class MJSocket {
         this.socket.on("switchState", (data) => {
             switch (data) {
                 case "FREE":
-                    this.game.updateGameState(GameState.PLAYING);
+                    this.game.updateGameState(GameState.FREE);
                     console.log("GameState is now "+this.game.gameState);
-                    this.game.tableSocket.socket.emit("switchState", "FREE");
+                    this.game.tableSocket?.socket.emit("switchState", "FREE");
                     break;
                 case "RESTRICTED":
                     this.game.updateGameState(GameState.RESTRICTED);
-                    this.game.tableSocket.socket.emit("switchState", "RESTRICTED"); //doesn't exist yet on table client-side, but it's here as an example
+                    this.game.tableSocket?.socket.emit("switchState", "RESTRICTED");
                     console.log("GameState is now "+this.game.gameState);
 
                     break;
                 case "TURN":
-                    console.log(`State ${data} not implemented yet. You are in state ${this.game.gameState}`);
-                    //this.game.updateGameState(GameState.RESTRICTED);
-                    //this.game.tableSocket.socket.emit("switchStateRestricted", ""); //doesn't exist yet on table client-side, but it's here as an example
+                    console.log(`State ${data} not implemented yet.`);
+                    //this.game.updateGameState(GameState.TURN);
+                    //this.game.tableSocket?.socket.emit("switchStateRestricted", ""); 
                     break;
                 default:
                     console.log(`State ${data} not recognized.`);
             }
             console.log(`GameState is now ${GameState[this.game.gameState]}`);
         })
-
+        
         this.socket.on("playerMove", (data) => {
             console.log("Send to table move");
-
-            this.game.tableSocket.socket.emit("playerMove", data);
+            
+            this.game.tableSocket?.socket.emit("playerMove", data);
 
         })
     }

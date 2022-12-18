@@ -14,7 +14,7 @@ import Character from "./character";
 
 export enum GameState {
     INIT,
-    PLAYING,
+    FREE,
     RESTRICTED,
 }
 

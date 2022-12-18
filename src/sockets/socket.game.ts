@@ -19,24 +19,10 @@ export default class GameSocket{
         playerCharacter.updateInfo(variable, value);
 
         // emit to the player
-        //playerSocket?.socket.emit("updateInfoCharacter", { variable:variable, value:value });
+        playerSocket?.socket.emit("updateInfoCharacter", { variable:variable, value:value });
 
         // emit to the table
-        //this.game.tableSocket.socket.emit("updateInfoCharacter",{ playerId:playerId, variable:variable, value:value });
-    }
-
-    useSkill(playerId: string, skillId: number, targetId: string) {
-        let playerSocket = this.findPlayerSocket(playerId);
-        // apply changement 
-        let playerCharacter = playerSocket!.player.character;
-        console.log(typeof playerCharacter);
-        playerCharacter.updateInfo(variable, value);
-
-        // emit to the player
-        //playerSocket?.socket.emit("updateInfoCharacter", { variable:variable, value:value });
-
-        // emit to the table
-        //this.game.tableSocket.socket.emit("updateInfoCharacter",{ playerId:playerId, variable:variable, value:value });
+        this.game.tableSocket?.socket.emit("updateInfoCharacter",{ playerId:playerId, variable:variable, value:value });
     }
 
     getPlayerSpeed(data: string): number {

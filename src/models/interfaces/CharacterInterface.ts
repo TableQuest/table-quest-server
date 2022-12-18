@@ -9,6 +9,7 @@ export default interface CharacterInterface {
     manaMax: number;
     mana: number;
     description: string;
+    speed: number
     skills: SkillInterface[];
 
     setLife(life: number):void;

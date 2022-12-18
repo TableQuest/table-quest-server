@@ -11,14 +11,16 @@ export default class Character implements CharacterInterface{
     manaMax: number;
     mana: number;
     description: string;
+    speed: number;
     skills: SkillInterface[];
 
-    constructor(id: number, name: string, lifeMax: number, life: number,manaMax: number, mana: number, description: string, skills: SkillInterface[]) {
+    constructor(id: number, name: string, lifeMax: number, life: number,manaMax: number, mana: number, description: string, speed: number, skills: SkillInterface[]) {
         this.id = id;
         this.name = name;
         this.lifeMax = lifeMax;
         this.life = life;
         this.description = description;
+        this.speed = speed;
         this.skills = skills;
     }
 

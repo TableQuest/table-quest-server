@@ -2,7 +2,7 @@ import Game from "../models/game";
 import {Socket} from "socket.io";
 import SkillInterface from "../models/interfaces/SkillInterface";
 import CharacterInterface from "../models/interfaces/CharacterInterface";
-
+import Character from "../models/character";
 export default class GameSocket{
 
     game: Game;
@@ -11,24 +11,18 @@ export default class GameSocket{
         this.game = game;
     }
 
-    /**
-     * When the mj remove life from the character:
-     *  - update the character on the model
-     *  - emit the change to the mj
-     *  - emit the change to the player connected to the character
-     */
-    public updatePlayerLife(id:string, life:number){
-        let playerSocket = this.findPlayerSocket(id);
-        playerSocket!.player.character.life = life;
-        console.log("Player "+playerSocket!.player.character.name+" has "+playerSocket!.player.character.life+" points of life");
-        // send to the mj
-        this.game.mjSocket.socket.emit("updateCharacter",{ id:id, life:life, mana: playerSocket!.player.character.mana});
+    public updateInfoCharacter(playerId: string, variable: string, value: string){
+        let playerSocket = this.findPlayerSocket(playerId);
+        // apply changement 
+        let playerCharacter = playerSocket!.player.character;
+        console.log(typeof playerCharacter);
+        playerCharacter.updateInfo(variable, value);
 
-        // send to the player connected to the character
-        playerSocket?.socket.emit("updateLifePlayer", ""+life);
+        // emit to the player
+        playerSocket?.socket.emit("updateInfoCharacter", { variable:variable, value:value });
 
-        // send to the table
-        //this.game.tableSocket.socket.emit("updateLifeCharacter",{id:id, life:life});
+        // emit to the table
+        this.game.tableSocket?.socket.emit("updateInfoCharacter",{ playerId:playerId, variable:variable, value:value });
     }
 
     getPlayerSpeed(data: string): number {
@@ -50,9 +44,10 @@ export default class GameSocket{
         if (this.isSkillUsable(playerCharacter, skill, targetId)) {
             this.applySkill(playerCharacter, skill!, targetId);
 
-            this.sendToSockets("updateCharacter", {id:targetId, life:targetSocket!.player.character.life, mana:targetSocket!.player.character.mana},
+            // 
+            this.sendToSockets("updateInfoCharacter", {playerId:targetId, variable:"life", value:targetSocket!.player.character.life},
                 [this.game.mjSocket.socket, targetSocket!.socket]);
-            this.sendToSockets("updateCharacter", {id:targetId, life:playerSocket!.player.character.life,  mana:playerSocket!.player.character.mana},
+            this.sendToSockets("updateInfoCharacter", {playerId:playerId, variable:"mana", value:playerSocket!.player.character.mana},
                 [this.game.mjSocket.socket, playerSocket!.socket]);
         }
     }

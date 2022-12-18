@@ -8,6 +8,7 @@
             "manaMax": 50,
             "mana": 50,
             "description": "A noble but strong dwarf.",
+            "speed":2,
             "skills": [
                 {
                     "id": 0,
@@ -52,6 +53,7 @@
             "manaMax": 75,
             "mana": 75,
             "description": "A malicious and beautiful elf.",
+            "speed":3,
             "skills": [
                 {
                     "id": 3,

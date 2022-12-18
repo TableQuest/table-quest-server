@@ -10,7 +10,7 @@ import TableSocket from "../sockets/socket.table";
 import gameJson from '../../data/game.json';
 import CharacterInterface from "./interfaces/CharacterInterface";
 import GameSocket from "../sockets/socket.game";
-
+import Character from "./character";
 
 export enum GameState {
     INIT,
@@ -44,7 +44,14 @@ export default class Game {
         this.gameState = GameState.INIT;
 
         /* Static Game Assets */
-        this.characters = gameJson.characters as Array<CharacterInterface>;
+        this.characters = new Array();
+        for (let i=0; i<gameJson.characters.length; i++){
+            let c = <Character>JSON.parse(JSON.stringify(gameJson.characters[i]))
+            let objC :Character = new Character(c.id, c.name, c.lifeMax, c.life, c.manaMax, c.mana, c.description, c.speed, c.skills);
+            this.characters.push(objC);
+        }
+
+        //this.characters = gameJson.characters as Array<CharacterInterface>;
 
         /* Sockets */
         this.mjSocket = new MJSocket(this, io);
@@ -106,4 +113,5 @@ export default class Game {
     verifyGameState(requiredState: GameState) {
         return this.gameState === requiredState;
     }
+
 }

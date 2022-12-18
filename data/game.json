@@ -1,18 +1,92 @@
 {
     "characters": [
-        {   
+        {
             "id": 0,
             "name": "Dwarf",
             "lifeMax": 100,
             "life": 100,
-            "description": "A noble but strong dwarf."
+            "manaMax": 50,
+            "mana": 50,
+            "description": "A noble but strong dwarf.",
+            "skills": [
+                {
+                    "id": 0,
+                    "name": "Axe",
+                    "manaCost": 0,
+                    "range": 1,
+                    "maxTarget": 1,
+                    "type": "PHYSICAL",
+                    "statModifier": 3,
+                    "healing": false,
+                    "image": "Images/Axe"
+                },
+                {
+                    "id": 1,
+                    "name": "Earth Quake",
+                    "manaCost": 5,
+                    "range": 4,
+                    "maxTarget": 4,
+                    "type": "PHYSICAL",
+                    "statModifier": 0,
+                    "healing": false,
+                    "image": "Images/EarthQuake"
+                },
+                {
+                    "id": 2,
+                    "name": "Lay on Hands",
+                    "manaCost": 8,
+                    "range": 1,
+                    "maxTarget": 1,
+                    "type": "MENTAL",
+                    "statModifier": 2,
+                    "healing": true,
+                    "image": "Images/Healing"
+                }
+            ]
         },
         {
             "id": 1,
             "name": "Elf",
             "lifeMax": 100,
-            "life": 100, 
-            "description": "A malicious and beautiful elf."
+            "life": 100,
+            "manaMax": 75,
+            "mana": 75,
+            "description": "A malicious and beautiful elf.",
+            "skills": [
+                {
+                    "id": 3,
+                    "name": "Dagger",
+                    "manaCost": 0,
+                    "range": 1,
+                    "maxTarget": 1,
+                    "type": "PHYSICAL",
+                    "statModifier": 2,
+                    "healing": false,
+                    "image": "Images/Dagger"
+                },
+                {
+                    "id": 4,
+                    "name": "Bow",
+                    "manaCost": 0,
+                    "range": 10,
+                    "maxTarget": 1,
+                    "type": "PHYSICAL",
+                    "statModifier": 1,
+                    "healing": false,
+                    "image": "Images/Bow"
+                },
+                {
+                    "id": 5,
+                    "name": "Regeneration",
+                    "manaCost": 9,
+                    "range": 1,
+                    "maxTarget": 1,
+                    "type": "MENTAL",
+                    "statModifier": 2,
+                    "healing": true,
+                    "image": "Images/Healing"
+                }
+            ]
         }
     ]
 }

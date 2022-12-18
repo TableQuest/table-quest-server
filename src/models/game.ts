@@ -11,13 +11,22 @@ import gameJson from '../../data/game.json';
 import CharacterInterface from "./interfaces/CharacterInterface";
 import GameSocket from "../sockets/socket.game";
 
+
+export enum GameState {
+    INIT,
+    PLAYING,
+    RESTRICTED,
+}
+
 /**
  * Main Controller of the Server. Contains the models and the devices` sockets.
  */
-export default class Game {    
+export default class Game {
     app: App;
 
-    /* Static models of the differents characters. */
+    gameState: GameState;
+
+    /* Static models of the different characters. */
     characters: Array<CharacterInterface>;
 
     /* All the sockets of the system. */
@@ -32,6 +41,7 @@ export default class Game {
 
     constructor(app: App, io: Server, express: Express) {
         this.app = app;
+        this.gameState = GameState.INIT;
 
         /* Static Game Assets */
         this.characters = gameJson.characters as Array<CharacterInterface>;
@@ -54,6 +64,10 @@ export default class Game {
     removePlayer(player: PlayerSocket) {
         let i = this.playerSockets.indexOf(player);
         this.playerSockets.splice(i, 1);
+    }
+
+    getPlayer(playerId : string) {
+        return this.playerSockets.find(p => p.player.id === playerId)!.player;
     }
 
     addMJ(socket: any) {
@@ -83,5 +97,13 @@ export default class Game {
                 return;
             }
         })
+    }
+
+    updateGameState(newState: GameState) {
+        this.gameState = newState;
+    }
+
+    verifyGameState(requiredState: GameState) {
+        return this.gameState === requiredState;
     }
 }

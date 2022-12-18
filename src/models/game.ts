@@ -11,6 +11,8 @@ import gameJson from '../../data/game.json';
 import CharacterInterface from "./interfaces/CharacterInterface";
 import GameSocket from "../sockets/socket.game";
 import Character from "./character";
+import EntityInterface from "./interfaces/EntityInterface";
+import Entity from "./Entity";
 
 export enum GameState {
     INIT,
@@ -26,8 +28,9 @@ export default class Game {
 
     gameState: GameState;
 
-    /* Static models of the different characters. */
+    /* Static models of the different characters and npc. */
     characters: Array<CharacterInterface>;
+    npc: Array<EntityInterface>;
 
     /* All the sockets of the system. */
     mjSocket: MJSocket
@@ -44,14 +47,19 @@ export default class Game {
         this.gameState = GameState.INIT;
 
         /* Static Game Assets */
-        this.characters = new Array();
+        this.characters = [];
         for (let i=0; i<gameJson.characters.length; i++){
             let c = <Character>JSON.parse(JSON.stringify(gameJson.characters[i]))
             let objC :Character = new Character(c.id, c.name, c.lifeMax, c.life, c.manaMax, c.mana, c.description, c.speed, c.skills);
             this.characters.push(objC);
         }
 
-        //this.characters = gameJson.characters as Array<CharacterInterface>;
+        this.npc = [];
+        for (let i=0; i<gameJson.npc.length; i++){
+            let n = <Entity>JSON.parse(JSON.stringify(gameJson.npc[i]))
+            let objN :Entity = new Entity(n.id, n.name, n.lifeMax, n.life, n.description);
+            this.npc.push(objN);
+        }
 
         /* Sockets */
         this.mjSocket = new MJSocket(this, io);
@@ -95,6 +103,10 @@ export default class Game {
         });
 
         return playerExists;
+    }
+
+    isNpcExist(npcId: number) {
+        return this.npc.find(n => n.id === npcId) != undefined;
     }
 
     updatePlayerSocket(socket: Socket, playerId: string) {

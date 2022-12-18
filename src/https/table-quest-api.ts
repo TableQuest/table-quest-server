@@ -2,8 +2,6 @@ import { Express } from 'express'
 import Game from '../models/game';
 
 import characters from '../../data/game.json'
-import Player from '../models/player'
-import Character from '../models/character'
 
 
 export default class TableQuestAPI {
@@ -26,7 +24,7 @@ export default class TableQuestAPI {
             res.status(200)
                 .send(JSON.stringify(characters))
         });
-        
+
         this.app.get('/characters/:id', (req, res) => {
             let id = +req.params.id;
             let character = this.game.characters.find(c => c.id === id);
@@ -48,5 +46,12 @@ export default class TableQuestAPI {
                 .send(JSON.stringify(charactersObj));
         })
 
-    }   
+        this.app.get('/players/:playerId/skills', (req, res) => {
+            if (this.game.isPlayerExist(req.params.playerId)) {
+                let playerChar = this.game.getPlayer(req.params.playerId)!.character;
+                res.status(200)
+                    .send(JSON.stringify(playerChar.skills));
+            }
+        })
+    }
 }

@@ -66,6 +66,10 @@ export default class Game {
         this.playerSockets.splice(i, 1);
     }
 
+    getPlayer(playerId : string) {
+        return this.playerSockets.find(p => p.player.id === playerId)!.player;
+    }
+
     addMJ(socket: any) {
         this.mjSocket.initWebSocket(socket);
     }

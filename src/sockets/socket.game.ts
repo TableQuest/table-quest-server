@@ -21,7 +21,7 @@ export default class GameSocket{
         playerSocket?.socket.emit("updateInfoCharacter", { variable:variable, value:value });
 
         // emit to the table
-        this.game.tableSocket?.socket.emit("updateInfoCharacter",{ playerId:playerId, variable:variable, value:value });
+        this.game.tableSocket?.socket?.emit("updateInfoCharacter",{ playerId:playerId, variable:variable, value:value });
     }
 
     getPlayerSpeed(data: string): number {

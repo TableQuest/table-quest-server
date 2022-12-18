@@ -36,7 +36,7 @@ export default class TableSocket {
 
         this.socket.on("playerMove", (data) => {
             console.log("Movement of player id : " + data);
-            this.socket.emit("playerMove", {"playerId": data, "speed": this.game.gameSocket.getPlayerSpeed(data)});
+            this.socket.emit("playerMove", JSON.stringify({"playerId": data, "speed": 2}));
         })
     }
 }

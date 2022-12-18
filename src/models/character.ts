@@ -1,5 +1,4 @@
 import CharacterInterface from "./interfaces/CharacterInterface";
-import Skill from "./skill";
 import SkillInterface from "./interfaces/SkillInterface";
 
 export default class Character implements CharacterInterface{
@@ -19,6 +18,8 @@ export default class Character implements CharacterInterface{
         this.name = name;
         this.lifeMax = lifeMax;
         this.life = life;
+        this.manaMax = manaMax;
+        this.mana = mana;
         this.description = description;
         this.speed = speed;
         this.skills = skills;
@@ -29,11 +30,11 @@ export default class Character implements CharacterInterface{
     }
 
     setLife(life: number){
-        this.life = life;
+        this.life = Math.max(Math.min(this.life, this.lifeMax), 0);
     }
 
     setMana(mana: number){
-        this.mana = mana;
+        this.mana = Math.max(Math.min(this.mana, this.manaMax), 0);
     }
 
     getSkill(skillId: number) {

@@ -79,16 +79,17 @@ export default class GameSocket{
     Affects the player and target's stats depending on the stats of the skill.
     */
     applySkill(caster: CharacterInterface, skill: SkillInterface, targetId: string) {
-        caster.mana -= skill.manaCost;
+        caster.setMana(caster.mana - skill.manaCost);
         let targetCharacter = this.game.getPlayer(targetId)!.character;
 
         //could be moved to Skill class, not sure as it would make it more annoying to read
         if (skill.healing) {
-            targetCharacter.life += skill.statModifier;
+            targetCharacter.setLife(targetCharacter.life + skill.statModifier);
         }
         else {
-            targetCharacter.life -= skill.statModifier;
+            targetCharacter.setLife(targetCharacter.life - skill.statModifier);
         }
+        console.log(`Entity ${targetId}'s ${targetCharacter.name} now has ${targetCharacter.life} HP.`)
     }
 
     findPlayerSocket(id: string) {

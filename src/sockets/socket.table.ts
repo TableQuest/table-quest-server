@@ -1,5 +1,6 @@
 import { Server, Socket } from "socket.io";
 import { DefaultEventsMap } from "socket.io/dist/typed-events";
+import { idText } from "typescript";
 import Game from "../models/game";
 
 
@@ -34,12 +35,13 @@ export default class TableSocket {
             let skillId = json.skillId;
             let targetId = json.targetId;
             this.game.gameSocket.useSkill(playerId, skillId, targetId);
+        })
 
         this.socket.on("attackPlayer", (data) =>{
             let json = JSON.parse(data);
             console.log(json);
-            this.game.gameSocket.updatePlayerLife(json.id, json.life);
-        })
+            this.game.gameSocket.updateInfoCharacter(json.id,"life",json.life);
+        });
 
         this.socket.on("debugMessage", (data) =>{
             console.log(data);

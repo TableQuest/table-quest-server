@@ -4,7 +4,7 @@ import Player from "../models/player";
 import {Socket} from "socket.io";
 import SkillInterface from "../models/interfaces/SkillInterface";
 import CharacterInterface from "../models/interfaces/CharacterInterface";
-
+import Character from "../models/character";
 export default class GameSocket{
 
     game: Game;
@@ -13,24 +13,20 @@ export default class GameSocket{
         this.game = game;
     }
 
-    /**
-     * When the mj remove life from the character:
-     *  - update the character on the model
-     *  - emit the change to the mj
-     *  - emit the change to the player connected to the character
-     */
-    public updatePlayerLife(id:string, life:number){
-        let playerSocket = this.findPlayerSocket(id);
-        playerSocket!.player.character.life = life;
-        console.log("Player "+playerSocket!.player.character.name+" has "+playerSocket!.player.character.life+" points of life");
-        // send to the mj
-        this.game.mjSocket.socket.emit("updateLifeCharacter",{ id:id, life:life});
 
-        // send to the player connected to the character
-        playerSocket?.socket.emit("updateLifePlayer", ""+life);
+    public updateInfoCharacter(playerId: string, variable: string, value: string){
+        console.log("update info character "+ playerId + " "+ variable + " "+ value);
+        let playerSocket = this.findPlayerSocket(playerId);
+        // apply changement 
+        let playerCharacter = playerSocket!.player.character;
+        console.log(typeof playerCharacter);
+        playerCharacter.updateInfo(variable, value);
 
-        // send to the table
-        //this.game.tableSocket.socket.emit("updateLifeCharacter",{id:id, life:life});
+        // emit to the player
+        //playerSocket?.socket.emit("updateInfoCharacter", { variable:variable, value:value });
+
+        // emit to the table
+        //this.game.tableSocket.socket.emit("updateInfoCharacter",{ playerId:playerId, variable:variable, value:value });
     }
 
     useSkill(playerId: string, skillId: number, targetId: string) {

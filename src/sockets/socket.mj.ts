@@ -27,15 +27,15 @@ export default class MJSocket {
         this.socket = socket;
         this.isEnable = true;
 
-        // The mj change the life of a character
-        this.socket.on("updateLifeCharacter", (data) =>{
-
+        this.socket.on("updateInfoCharacter", (data) => {
+            console.log("recieve update info")
             if (!this.game.verifyGameState(GameState.INIT)) {
+                console.log("apply update info");
                 let json = JSON.parse(data);
-                this.game.gameSocket.updatePlayerLife(json.id, json.life);
+                this.game.gameSocket.updateInfoCharacter(json.playerId,json.variable, json.value);
             }
             else {
-                console.log("Cannot change characters' life if the game hasn't started.");
+                console.log("Cannot change characters info if the game hasn't started.");
             }
         })
 
@@ -43,7 +43,7 @@ export default class MJSocket {
             switch (data) {
                 case "PLAYING":
                     this.game.updateGameState(GameState.PLAYING);
-                    this.game.tableSocket.socket.emit("switchStatePlaying", "");
+                    //this.game.tableSocket.socket.emit("switchStatePlaying", "");
                     break;
                 case "RESTRICTED":
                     this.game.updateGameState(GameState.RESTRICTED);

@@ -12,8 +12,12 @@ export default interface CharacterInterface {
     skills: SkillInterface[];
 
     setLife(life: number):void;
+    setLifeMax(lifeMax: number):void;
     setMana(mana: number):void;
+    setManaMax(manaMax: number):void;
 
     isSkillUsable(skillId: number): boolean;
     getSkill(skillId: number): SkillInterface | undefined;
+
+    updateInfo(variable: string, value: string):void;
 }

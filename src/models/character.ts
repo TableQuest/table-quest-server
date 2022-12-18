@@ -30,15 +30,15 @@ export default class Character implements CharacterInterface{
     }
 
     setLife(life: number){
-        this.life = Math.max(Math.min(this.life, this.lifeMax), 0);
+        this.life = Math.max(Math.min(life, this.lifeMax), 0);
     }
     setLifeMax(lifeMax: number){
         this.lifeMax = lifeMax;
     }
 
-    
+
     setMana(mana: number){
-        this.mana = Math.max(Math.min(this.mana, this.manaMax), 0);
+        this.mana = Math.max(Math.min(mana, this.manaMax), 0);
     }
     setManaMax(manaMax: number){
         this.manaMax = manaMax;
@@ -77,7 +77,7 @@ export default class Character implements CharacterInterface{
                 } catch (error) {
                     console.log("ManaMax value not numerical")
                 }
-                break;                   
+                break;
             default:
                 break;
         }

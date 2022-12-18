@@ -44,16 +44,16 @@ export default class MJSocket {
                 case "FREE":
                     this.game.updateGameState(GameState.PLAYING);
                     console.log("GameState is now "+this.game.gameState);
-                    //this.game.tableSocket.socket.emit("switchStatePlaying", "");
+                    this.game.tableSocket.socket.emit("switchState", "FREE");
                     break;
                 case "RESTRICTED":
                     this.game.updateGameState(GameState.RESTRICTED);
-                    //this.game.tableSocket.socket.emit("switchStateRestricted", ""); //doesn't exist yet on table client-side, but it's here as an example
+                    this.game.tableSocket.socket.emit("switchState", "RESTRICTED"); //doesn't exist yet on table client-side, but it's here as an example
                     console.log("GameState is now "+this.game.gameState);
 
                     break;
                 case "TURN":
-                    console.log(`State ${data} not implemented yet. You are in state${this.game.gameState}`);
+                    console.log(`State ${data} not implemented yet. You are in state ${this.game.gameState}`);
                     //this.game.updateGameState(GameState.RESTRICTED);
                     //this.game.tableSocket.socket.emit("switchStateRestricted", ""); //doesn't exist yet on table client-side, but it's here as an example
                     break;
@@ -63,13 +63,9 @@ export default class MJSocket {
             console.log(`GameState is now ${GameState[this.game.gameState]}`);
         })
 
-        this.socket.on("switchStateConstraint", () => {
-            this.game.tableSocket.socket.emit("switchStateConstraint", "");
-        })
-        
         this.socket.on("playerMove", (data) => {
             console.log("Send to table move");
-            
+
             this.game.tableSocket.socket.emit("playerMove", data);
 
         })

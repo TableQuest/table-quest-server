@@ -2,7 +2,6 @@ import Game from "../models/game";
 import {Socket} from "socket.io";
 import SkillInterface from "../models/interfaces/SkillInterface";
 import CharacterInterface from "../models/interfaces/CharacterInterface";
-import Character from "../models/character";
 export default class GameSocket{
 
     game: Game;
@@ -13,9 +12,9 @@ export default class GameSocket{
 
     public updateInfoCharacter(playerId: string, variable: string, value: string){
         let playerSocket = this.findPlayerSocket(playerId);
-        // apply changement 
+
+        // apply changes
         let playerCharacter = playerSocket!.player.character;
-        console.log(typeof playerCharacter);
         playerCharacter.updateInfo(variable, value);
 
         // emit to the player
@@ -29,7 +28,7 @@ export default class GameSocket{
         let playerSocket = this.game.playerSockets.find(p => p.player.id === data);
         return playerSocket?.player.character.speed!;
     }
-    
+
     /*
     Calls the function to check if the skill can be used and if so, calls the function to use it. Then it sends a message
     to update the character's stats to the MJ socket.
@@ -44,7 +43,6 @@ export default class GameSocket{
         if (this.isSkillUsable(playerCharacter, skill, targetId)) {
             this.applySkill(playerCharacter, skill!, targetId);
 
-            // 
             this.sendToSockets("updateInfoCharacter", {playerId:targetId, variable:"life", value:targetSocket!.player.character.life},
                 [this.game.mjSocket.socket, targetSocket!.socket]);
             this.sendToSockets("updateInfoCharacter", {playerId:playerId, variable:"mana", value:playerSocket!.player.character.mana},

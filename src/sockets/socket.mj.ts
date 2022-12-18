@@ -41,13 +41,21 @@ export default class MJSocket {
 
         this.socket.on("switchState", (data) => {
             switch (data) {
-                case "PLAYING":
+                case "FREE":
                     this.game.updateGameState(GameState.PLAYING);
+                    console.log("GameState is now "+this.game.gameState);
                     //this.game.tableSocket.socket.emit("switchStatePlaying", "");
                     break;
                 case "RESTRICTED":
                     this.game.updateGameState(GameState.RESTRICTED);
-                    this.game.tableSocket.socket.emit("switchStateRestricted", ""); //doesn't exist yet on table client-side, but it's here as an example
+                    //this.game.tableSocket.socket.emit("switchStateRestricted", ""); //doesn't exist yet on table client-side, but it's here as an example
+                    console.log("GameState is now "+this.game.gameState);
+
+                    break;
+                case "TURN":
+                    console.log(`State ${data} not implemented yet. You are in state${this.game.gameState}`);
+                    //this.game.updateGameState(GameState.RESTRICTED);
+                    //this.game.tableSocket.socket.emit("switchStateRestricted", ""); //doesn't exist yet on table client-side, but it's here as an example
                     break;
                 default:
                     console.log(`State ${data} not recognized.`);

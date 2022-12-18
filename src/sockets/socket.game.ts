@@ -15,7 +15,6 @@ export default class GameSocket{
 
 
     public updateInfoCharacter(playerId: string, variable: string, value: string){
-        console.log("update info character "+ playerId + " "+ variable + " "+ value);
         let playerSocket = this.findPlayerSocket(playerId);
         // apply changement 
         let playerCharacter = playerSocket!.player.character;

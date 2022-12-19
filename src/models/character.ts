@@ -1,6 +1,6 @@
 import CharacterInterface from "./interfaces/CharacterInterface";
 import SkillInterface from "./interfaces/SkillInterface";
-import Entity from "./Entity";
+import Entity from "./entity";
 
 export default class Character extends Entity implements CharacterInterface{
 

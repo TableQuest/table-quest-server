@@ -1,18 +1,13 @@
-import { Socket } from "socket.io";
-import { DefaultEventsMap } from "socket.io/dist/typed-events";
-import PlayerSocket from "../sockets/socket.player";
 import Character from "./character";
+import Tangible from "./tangible";
 
-export default class Player {
+export default class Player extends Tangible {
 
-    id: string;
-    character: Character;
-    pawnCode: string;
+    override character: Character;
     menuCode: string;
 
     constructor(id: string, pawnCode: string, menuCode: string) {
-        this.id = id;
-        this.pawnCode = pawnCode;
+        super(id, pawnCode);
         this.menuCode = menuCode;
     }
 }

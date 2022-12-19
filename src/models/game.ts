@@ -12,7 +12,7 @@ import CharacterInterface from "./interfaces/CharacterInterface";
 import GameSocket from "../sockets/socket.game";
 import Character from "./character";
 import EntityInterface from "./interfaces/EntityInterface";
-import Entity from "./Entity";
+import Entity from "./entity";
 
 export enum GameState {
     INIT,

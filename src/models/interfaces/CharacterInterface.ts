@@ -1,24 +1,17 @@
 import SkillInterface from "./SkillInterface";
+import EntityInterface from "./EntityInterface";
 
 
-export default interface CharacterInterface {
-    id: number;
-    name: string;
-    lifeMax: number;
-    life: number;
+export default interface CharacterInterface extends EntityInterface {
     manaMax: number;
     mana: number;
-    description: string;
     speed: number;
     skills: SkillInterface[];
 
-    setLife(life: number):void;
-    setLifeMax(lifeMax: number):void;
     setMana(mana: number):void;
     setManaMax(manaMax: number):void;
 
     hasEnoughMana(skill: SkillInterface): boolean;
     getSkill(skillId: number): SkillInterface | undefined;
 
-    updateInfo(variable: string, value: string):void;
 }

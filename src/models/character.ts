@@ -1,26 +1,18 @@
 import CharacterInterface from "./interfaces/CharacterInterface";
 import SkillInterface from "./interfaces/SkillInterface";
+import Entity from "./entity";
 
-export default class Character implements CharacterInterface{
+export default class Character extends Entity implements CharacterInterface{
 
-    id: number;
-    name: string;
-    lifeMax: number;
-    life: number;
     manaMax: number;
     mana: number;
-    description: string;
     speed: number;
     skills: SkillInterface[];
 
     constructor(id: number, name: string, lifeMax: number, life: number,manaMax: number, mana: number, description: string, speed: number, skills: SkillInterface[]) {
-        this.id = id;
-        this.name = name;
-        this.lifeMax = lifeMax;
-        this.life = life;
+        super(id, name, life, lifeMax, description);
         this.manaMax = manaMax;
         this.mana = mana;
-        this.description = description;
         this.speed = speed;
         this.skills = skills;
     }
@@ -28,14 +20,6 @@ export default class Character implements CharacterInterface{
     hasEnoughMana(skill: SkillInterface) {
         return skill!.manaCost <= this.mana;
     }
-
-    setLife(life: number){
-        this.life = Math.max(Math.min(life, this.lifeMax), 0);
-    }
-    setLifeMax(lifeMax: number){
-        this.lifeMax = lifeMax;
-    }
-
 
     setMana(mana: number){
         this.mana = Math.max(Math.min(mana, this.manaMax), 0);
@@ -48,7 +32,7 @@ export default class Character implements CharacterInterface{
         return this.skills.find(s => s.id == skillId);
     }
 
-    public updateInfo(variable: string, value: string): void {
+    public override updateInfo(variable: string, value: string): void {
         switch (variable) {
             case "life":
                 try {

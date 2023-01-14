@@ -68,6 +68,7 @@ export default class GameSocket{
         }
 
         //TODO check if target exists once NPCs are done, using a player for now
+        //return (this.game.isNpcExist(targetId) && playerCharacter.hasEnoughMana(skill))
         //TODO check skill range
         return (this.game.isPlayerExist(targetId) && playerCharacter.hasEnoughMana(skill))
     }

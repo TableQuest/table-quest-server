@@ -90,5 +90,21 @@
                 }
             ]
         }
+    ],
+    "npc": [
+        {
+            "id": 10,
+            "name": "Goblin",
+            "lifeMax": 50,
+            "life": 50,
+            "description": "Weak goblin but these creatures are known to be vicious."
+        },
+        {
+            "id": 11,
+            "name": "Ogre",
+            "lifeMax": 100,
+            "life": 100,
+            "description": "Ogres are famous for their strength but not their intellect."
+        }
     ]
 }

@@ -24,6 +24,27 @@ export default class TableSocket {
         this.socket = socket;
         this.isEnable = true;
 
+        this.socket.on("clickSkill", (data) => {
+            let json = JSON.parse(data);
+            console.log(`Player ${json.playerId} clicked skill ${json.skillName} (${json.skillId})`);
+
+            let player = this.game.getPlayer(json.playerId);
+            let skill = player.character.getSkill(json.skillId);
+            let targetIdList: string[] = [];
+            this.game.playerSockets.forEach(playerSocket => {
+                targetIdList.push(playerSocket.player.id);
+            });
+
+            let myData: any = {
+                playerId: player.id,
+                skill: skill,
+                targetsId: targetIdList
+            }
+            let responseJson = JSON.stringify(myData);
+            console.log(responseJson);
+            this.socket.emit("clickSkill", responseJson);
+        })
+
         /*
         When a player did all the steps to use a skill on the table, it sends a message to the server with the player ID,
         the skill ID and the target ID. The task is given to the gameSocket which will do all the verifications, will

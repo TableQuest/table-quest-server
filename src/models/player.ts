@@ -1,13 +1,15 @@
 import Character from "./character";
-import Tangible from "./tangible";
 
-export default class Player extends Tangible {
+export default class Player {
 
-    override character: Character;
+    character: Character;
     menuCode: string;
+    pawnCode: string;
+    id: string;
 
     constructor(id: string, pawnCode: string, menuCode: string) {
-        super(id, pawnCode);
+        this.pawnCode = pawnCode;
         this.menuCode = menuCode;
+        this.id = id;
     }
 }

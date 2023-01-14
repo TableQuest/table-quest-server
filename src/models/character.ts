@@ -61,6 +61,13 @@ export default class Character extends Entity implements CharacterInterface{
                 } catch (error) {
                     console.log("ManaMax value not numerical")
                 }
+                break;         
+            case "speed":
+                try {
+                    this.speed = Number(value);
+                } catch (error) {
+                    console.log("Speed value not numerical")
+                }
                 break;
             default:
                 break;

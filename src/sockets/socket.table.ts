@@ -72,5 +72,20 @@ export default class TableSocket {
             console.log("Movement of player id : " + data);
             this.socket.emit("playerMove", JSON.stringify({"playerId": data, "speed": 2}));
         })
+
+        this.socket.on("newNpc", (data) => {
+            if (this.game.newNpc !== undefined){
+                this.game.newNpc.pawnCode = data;
+
+                console.log(`Associate ${this.game.newNpc.name} ${this.game.newNpc.id} with the tabgible ${this.game.newNpc.pawnCode}`);
+                
+                if (this.game.mjSocket.isEnable){
+                    this.game.mjSocket.socket.emit("newNpc", this.game.newNpc)
+                }
+                this.game.npcTable.push(this.game.newNpc);
+                this.game.newNpc = undefined;
+
+            }
+        })
     }
 }

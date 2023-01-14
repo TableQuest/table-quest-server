@@ -97,14 +97,16 @@
             "name": "Goblin",
             "lifeMax": 50,
             "life": 50,
-            "description": "Weak goblin but these creatures are known to be vicious."
+            "description": "Weak goblin but these creatures are known to be vicious.",
+            "skills":[]
         },
         {
             "id": 11,
             "name": "Ogre",
             "lifeMax": 100,
             "life": 100,
-            "description": "Ogres are famous for their strength but not their intellect."
+            "description": "Ogres are famous for their strength but not their intellect.",   
+            "skills":[]
         }
     ]
 }

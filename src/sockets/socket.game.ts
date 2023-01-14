@@ -19,7 +19,7 @@ export default class GameSocket{
 
         // emit to the player
         playerSocket?.socket.emit("updateInfoCharacter", { variable:variable, value:value });
-
+        console.log(variable+value)
         // emit to the table
         this.game.tableSocket?.socket?.emit("updateInfoCharacter",{ playerId:playerId, variable:variable, value:value });
     }
@@ -39,9 +39,13 @@ export default class GameSocket{
         let playerCharacter = playerSocket!.player.character;
         let skill = playerCharacter.getSkill(skillId);
         let targetSocket = this.findPlayerSocket(targetId);
-
+        console.log("Try using skill");
         if (this.isSkillUsable(playerCharacter, skill, targetId)) {
+            console.log("skill usable");
             this.applySkill(playerCharacter, skill!, targetId);
+
+            this.game.mjSocket.socket?.emit("updateInfoCharacter", {playerId:targetId, variable:"life", value:targetSocket!.player.character.life});
+            this.game.mjSocket.socket?.emit("updateInfoCharacter", {playerId:playerId, variable:"mana", value:playerSocket!.player.character.mana});
 
             this.sendToSockets("updateInfoCharacter", {playerId:targetId, variable:"life", value:targetSocket!.player.character.life},
                 [this.game.mjSocket.socket, targetSocket!.socket]);
@@ -91,7 +95,7 @@ export default class GameSocket{
 
     public sendToSockets(message: string, data: any, sockets: Socket[]) {
         for (let socket of sockets) {
-            socket.emit(message, data);
+            socket?.emit(message, data);
         }
     }
 }

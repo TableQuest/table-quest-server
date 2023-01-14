@@ -13,6 +13,7 @@ import GameSocket from "../sockets/socket.game";
 import Character from "./character";
 import EntityInterface from "./interfaces/EntityInterface";
 import Entity from "./entity";
+import Npc from "./npc";
 
 export enum GameState {
     INIT,
@@ -30,11 +31,12 @@ export default class Game {
 
     /* Static models of the different characters and npc. */
     characters: Array<CharacterInterface>;
-    npc: Array<EntityInterface>;
-
+    npc: Array<Npc>;
+    newNpc: Npc | undefined;
     /* All the sockets of the system. */
     mjSocket: MJSocket
     playerSockets: PlayerSocket[];
+    npcTable: Npc[];
     connectionSocket: ConnectionSocket;
     tableSocket: TableSocket;
     gameSocket: GameSocket;
@@ -56,14 +58,17 @@ export default class Game {
 
         this.npc = [];
         for (let i=0; i<gameJson.npc.length; i++){
-            let n = <Entity>JSON.parse(JSON.stringify(gameJson.npc[i]))
-            let objN :Entity = new Entity(n.id, n.name, n.lifeMax, n.life, n.description);
+            let n = <Npc>JSON.parse(JSON.stringify(gameJson.npc[i]))
+            let objN = new Npc(n.id, n.name, n.lifeMax, n.life, n.description);
             this.npc.push(objN);
         }
+
+        this.newNpc = undefined;
 
         /* Sockets */
         this.mjSocket = new MJSocket(this, io);
         this.playerSockets = [];
+        this.npcTable = [];
         this.connectionSocket = new ConnectionSocket(this, io);
         this.tableSocket = new TableSocket(this, io);
         this.gameSocket = new GameSocket(this);

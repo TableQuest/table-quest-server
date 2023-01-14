@@ -1,8 +1,9 @@
-import Tangible from "./tangible";
+import Entity from "./entity";
+export default class Npc extends Entity{
 
-export default class Npc extends Tangible {
+    pawnCode: string;
 
-    constructor(id: string, pawncode: string) {
-        super(id, pawncode);
+    constructor(id: number, name: string, lifeMax: number, life: number, description: string) {
+        super(id, name, life, lifeMax, description);
     }
 }

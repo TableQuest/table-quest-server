@@ -1,7 +1,7 @@
 import { Express } from 'express'
 import Game from '../models/game';
 
-import characters from '../../data/game.json'
+import data from '../../data/game.json'
 
 
 export default class TableQuestAPI {
@@ -22,7 +22,12 @@ export default class TableQuestAPI {
 
         this.app.get('/characters', (req, res) => {
             res.status(200)
-                .send(JSON.stringify(characters))
+                .send(JSON.stringify(data.characters))
+        });
+
+        this.app.get('/npcs', (req, res) => {
+            res.status(200)
+                .send(JSON.stringify(data.npc))
         });
 
         this.app.get('/characters/:id', (req, res) => {

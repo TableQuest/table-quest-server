@@ -27,7 +27,7 @@ export default class TableQuestAPI {
 
         this.app.get('/npcs', (req, res) => {
             res.status(200)
-                .send(JSON.stringify(data.npc))
+                .send(JSON.stringify({"npcList":data.npc}))
         });
 
         this.app.get('/characters/:id', (req, res) => {
@@ -41,8 +41,6 @@ export default class TableQuestAPI {
             let characterList =new Array<Object>;
             this.game.playerSockets.forEach(function(p){
                 if (p.player.character != null){
-                    let cObj = JSON.stringify(p.player.character);
-
                     characterList.push({"playerId": p.player.id ,"characterInfo":p.player.character});
                 }
             })
@@ -50,6 +48,12 @@ export default class TableQuestAPI {
             res.status(200)
                 .send(JSON.stringify(charactersObj));
         })
+
+        this.app.get('/inGameNpcs', (req, res) => {
+            let npcObj = {"npcList": this.game.npcTable};
+            res.status(200)
+                .send(JSON.stringify(npcObj))
+        });
 
         this.app.get('/players/:playerId/skills', (req, res) => {
             if (this.game.isPlayerExist(req.params.playerId)) {

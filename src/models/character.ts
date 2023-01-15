@@ -9,8 +9,8 @@ export default class Character extends Entity implements CharacterInterface{
     speed: number;
     skills: SkillInterface[];
 
-    constructor(id: number, name: string, lifeMax: number, life: number,manaMax: number, mana: number, description: string, speed: number, skills: SkillInterface[]) {
-        super(id, name, life, lifeMax, description);
+    constructor(id: number, name: string, lifeMax: number, life: number,manaMax: number, mana: number, description: string, speed: number, skills: SkillInterface[], image:string) {
+        super(id, name, life, lifeMax, description, image);
         this.manaMax = manaMax;
         this.mana = mana;
         this.speed = speed;

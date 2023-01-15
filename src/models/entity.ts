@@ -6,13 +6,15 @@ export default class Entity implements EntityInterface {
     life: number;
     lifeMax: number;
     description: string;
+    image: string;
 
-    constructor(id: number, name: string, life: number, lifeMax: number, description: string) {
+    constructor(id: number, name: string, life: number, lifeMax: number, description: string, image:string) {
         this.description = description;
         this.id = id;
         this.life = life;
         this.lifeMax = lifeMax;
         this.name = name;
+        this.image = image;
     }
 
     setLife(life: number){

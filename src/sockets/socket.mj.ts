@@ -68,7 +68,7 @@ export default class MJSocket {
             console.log("Send to table move");
             
             this.game.tableSocket?.socket.emit("playerMove", data);
-
+ 
         })
 
         this.socket.on("newNpc", (data) => {
@@ -76,7 +76,7 @@ export default class MJSocket {
             let npc = this.game.npc.find(char => char.id === id);
 
             if (npc !== undefined) {
-                let newNpc = new Npc(npc.id, npc.name, npc.lifeMax, npc.life, npc.description);
+                let newNpc = new Npc(npc.id, npc.name, npc.lifeMax, npc.life,npc.description, npc.image);
                 this.game.newNpc = newNpc;
 
                 console.log(`Adding new npc ${newNpc.name}`);
@@ -84,7 +84,6 @@ export default class MJSocket {
                 if (this.game.tableSocket.isEnable){
                     this.game.tableSocket.socket.emit("newNpc", {});
                 }
-
             }
             else {
                 console.error(`No npc of id ${id} exists.`);

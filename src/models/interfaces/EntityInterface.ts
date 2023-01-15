@@ -4,6 +4,7 @@ export default interface EntityInterface {
     lifeMax: number;
     life: number;
     description: string;
+    image: string;
 
     setLife(life: number):void;
     setLifeMax(lifeMax: number):void;

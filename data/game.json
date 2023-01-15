@@ -9,6 +9,7 @@
             "mana": 50,
             "description": "A noble but strong dwarf.",
             "speed":2,
+            "image":"Images/Dwarf",
             "skills": [
                 {
                     "id": 0,
@@ -54,6 +55,7 @@
             "mana": 75,
             "description": "A malicious and beautiful elf.",
             "speed":3,
+            "image":"Images/Elf",
             "skills": [
                 {
                     "id": 3,
@@ -98,6 +100,7 @@
             "lifeMax": 50,
             "life": 50,
             "description": "Weak goblin but these creatures are known to be vicious.",
+            "image":"Images/Goblin",
             "skills":[]
         },
         {
@@ -105,7 +108,8 @@
             "name": "Ogre",
             "lifeMax": 100,
             "life": 100,
-            "description": "Ogres are famous for their strength but not their intellect.",   
+            "description": "Ogres are famous for their strength but not their intellect.",  
+            "image":"Images/Ogre", 
             "skills":[]
         }
     ]

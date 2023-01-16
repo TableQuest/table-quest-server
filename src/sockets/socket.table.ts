@@ -1,7 +1,5 @@
-import { Server, Socket } from "socket.io";
-import { DefaultEventsMap } from "socket.io/dist/typed-events";
-import { idText } from "typescript";
-import Game from "../models/game";
+import {Server, Socket} from "socket.io";
+import Game, {GameState} from "../models/game";
 
 
 /**
@@ -77,8 +75,8 @@ export default class TableSocket {
             if (this.game.newNpc !== undefined){
                 this.game.newNpc.pawnCode = data;
 
-                console.log(`Associate ${this.game.newNpc.name} ${this.game.newNpc.id} with the tabgible ${this.game.newNpc.pawnCode}`);
-                
+                console.log(`Associate ${this.game.newNpc.name} ${this.game.newNpc.id} with the tangible ${this.game.newNpc.pawnCode}`);
+
                 if (this.game.mjSocket.isEnable){
                     this.game.mjSocket.socket.emit("newNpc", this.game.newNpc)
                 }

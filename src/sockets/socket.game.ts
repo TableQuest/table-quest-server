@@ -44,6 +44,7 @@ export default class GameSocket{
             console.log("skill usable");
             this.applySkill(playerCharacter, skill!, targetId);
 
+            //doublon avec les appels de la méthode sendToSockets en dessous
             this.game.mjSocket.socket?.emit("updateInfoCharacter", {playerId:targetId, variable:"life", value:targetSocket!.player.character.life});
             this.game.mjSocket.socket?.emit("updateInfoCharacter", {playerId:playerId, variable:"mana", value:playerSocket!.player.character.mana});
 

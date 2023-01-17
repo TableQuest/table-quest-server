@@ -38,20 +38,40 @@ export default class GameSocket{
         let playerSocket = this.game.gameSocket.findPlayerSocket(playerId);
         let playerCharacter = playerSocket!.player.character;
         let skill = playerCharacter.getSkill(skillId);
-        let targetSocket = this.findPlayerSocket(targetId);
+        let targetSocketPlayer = this.findPlayerSocket(targetId);
+        let targetNpc = this.game.npcTable.find(n => n.pawnCode === targetId)
         console.log("Try using skill");
         if (this.isSkillUsable(playerCharacter, skill, targetId)) {
             console.log("skill usable");
             this.applySkill(playerCharacter, skill!, targetId);
-
+            let characterLife = targetSocketPlayer == null ? targetNpc!.life : targetSocketPlayer!.player.character.life;
             //doublon avec les appels de la méthode sendToSockets en dessous
-            this.game.mjSocket.socket?.emit("updateInfoCharacter", {playerId:targetId, variable:"life", value:targetSocket!.player.character.life});
-            this.game.mjSocket.socket?.emit("updateInfoCharacter", {playerId:playerId, variable:"mana", value:playerSocket!.player.character.mana});
+            this.game.mjSocket.socket?.emit("updateInfoCharacter", {
+                playerId: targetId,
+                variable: "life",
+                value: characterLife
+            });
+            this.game.mjSocket.socket?.emit("updateInfoCharacter", {
+                playerId: playerId,
+                variable: "mana",
+                value: playerSocket!.player.character.mana
+            });
 
-            this.sendToSockets("updateInfoCharacter", {playerId:targetId, variable:"life", value:targetSocket!.player.character.life},
-                [this.game.mjSocket.socket, targetSocket!.socket]);
-            this.sendToSockets("updateInfoCharacter", {playerId:playerId, variable:"mana", value:playerSocket!.player.character.mana},
-                [this.game.mjSocket.socket, playerSocket!.socket]);
+
+            if(targetSocketPlayer != null) {
+                this.sendToSockets("updateInfoCharacter", {
+                        playerId: targetId,
+                        variable: "life",
+                        value: characterLife
+                    },
+                    [this.game.mjSocket.socket, targetSocketPlayer!.socket]);
+                this.sendToSockets("updateInfoCharacter", {
+                        playerId: playerId,
+                        variable: "mana",
+                        value: playerSocket!.player.character.mana
+                    },
+                    [this.game.mjSocket.socket, playerSocket!.socket]);
+            }
         }
     }
 
@@ -67,11 +87,7 @@ export default class GameSocket{
             this.sendToSockets("errorMessage", errorMessage, [this.game.tableSocket.socket, this.game.mjSocket.socket]);
             return false;
         }
-
-        //TODO check if target exists once NPCs are done, using a player for now
-        //return (this.game.isNpcExist(targetId) && playerCharacter.hasEnoughMana(skill))
-        //TODO check skill range
-        return (this.game.isPlayerExist(targetId) && playerCharacter.hasEnoughMana(skill))
+        return ((this.game.isPlayerExist(targetId) || this.game.isNpcExist(targetId)) && playerCharacter.hasEnoughMana(skill))
     }
 
     /*
@@ -79,7 +95,7 @@ export default class GameSocket{
     */
     applySkill(caster: CharacterInterface, skill: SkillInterface, targetId: string) {
         caster.setMana(caster.mana - skill.manaCost);
-        let targetCharacter = this.game.getPlayer(targetId)!.character;
+        let targetCharacter = this.game.getEntity(targetId)!;
 
         //could be moved to Skill class, not sure as it would make it more annoying to read
         if (skill.healing) {

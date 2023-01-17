@@ -40,6 +40,17 @@ export default class MJSocket {
             }
         })
 
+        this.socket.on("updateInfoNpc", (data) => {
+            console.log("update npc info " + data);
+            if (!this.game.verifyGameState(GameState.INIT)) {
+                let json = JSON.parse(data);
+                this.game.gameSocket.updateInfoNpc(json.pawnCode, json.variable, json.value);
+            }
+            else{
+                console.log("Cannot change npc info is the game hasn't started.");
+            }
+        })
+
         this.socket.on("switchState", (data) => {
             switch (data) {
                 case "FREE":
@@ -79,7 +90,7 @@ export default class MJSocket {
                 let newNpc = new Npc(npc.id, npc.name, npc.lifeMax, npc.life,npc.description, npc.image);
                 this.game.newNpc = newNpc;
 
-                console.log(`Adding new npc ${newNpc.name}`);
+                console.log(`Adding new npc ${newNpc.id} ${newNpc.name}`);
 
                 if (this.game.tableSocket.isEnable){
                     this.game.tableSocket.socket.emit("newNpc", {});

@@ -80,7 +80,8 @@ export default class TableSocket {
                 console.log(`Associate ${this.game.newNpc.name} ${this.game.newNpc.id} with the tabgible ${this.game.newNpc.pawnCode}`);
                 
                 if (this.game.mjSocket.isEnable){
-                    this.game.mjSocket.socket.emit("newNpc", this.game.newNpc)
+                    this.game.mjSocket.socket.emit("newNpc", this.game.newNpc.pawnCode)
+                    console.log("send newNpc to mj");
                 }
                 this.game.npcTable.push(this.game.newNpc);
                 this.game.newNpc = undefined;

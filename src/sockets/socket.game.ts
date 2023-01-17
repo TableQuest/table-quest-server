@@ -29,17 +29,22 @@ export default class GameSocket{
     }
 
     public updateInfoNpc(pawnCode: string, variable: string, value:string){
-        console.log("pawnCode "+ pawnCode+" variable "+variable+" value "+value);
         let npc = this.game.npcTable.find(n => n.pawnCode = pawnCode);
  
-        // apply change
-        npc?.updateInfo(variable, value);
+        if (npc){
+            console.log("pawnCode "+ pawnCode+" variable "+variable+" value "+value);
+            
+            // apply change
+            npc?.updateInfo(variable, value);
 
-        // emit to the table 
-        this.game.tableSocket?.socket?.emit("updateInfoNpc", { "pawnCode":pawnCode, "variable":variable, "value":value });
+            // emit to the table 
+            this.game.tableSocket?.socket?.emit("updateInfoNpc", { "pawnCode":pawnCode, "variable":variable, "value":value });
 
-        // emit to the mj
-        this.game.mjSocket?.socket.emit("updateInfoNpc", JSON.stringify({ "pawnCode":pawnCode, "variable":variable, "value":value }));
+            // emit to the mj
+            this.game.mjSocket?.socket.emit("updateInfoNpc", JSON.stringify({ "pawnCode":pawnCode, "variable":variable, "value":value }));
+
+        }
+
     }
 
     getPlayerSpeed(data: string): number {

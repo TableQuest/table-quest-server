@@ -89,7 +89,7 @@ export default class MJSocket {
             let npc = this.game.npc.find(char => char.id === id);
 
             if (npc !== undefined) {
-                let newNpc = new Npc(npc.id, name, npc.lifeMax, npc.life,npc.description, npc.image);
+                let newNpc = new Npc(npc.id, name, npc.lifeMax, npc.life,npc.description, npc.image, npc.skills);
                 this.game.newNpc = newNpc;
 
                 console.log(`Adding new npc ${newNpc.id} ${newNpc.name}`);

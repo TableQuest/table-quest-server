@@ -77,7 +77,8 @@ export default class ConnectionSocket {
             if (this.game.disconnectedPlayer === 0) {
 
               console.log('The game will be resumed.');
-              this.game.tableSocket.socket.emit("resumeGame"); //TODO reprise du jeu
+              this.game.updateGameState(this.game.previousGameState);
+              this.game.tableSocket.socket.emit("resumeGame");
             }
           }
 

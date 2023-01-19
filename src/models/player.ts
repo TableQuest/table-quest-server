@@ -12,4 +12,8 @@ export default class Player {
         this.menuCode = menuCode;
         this.id = id;
     }
+
+    setPawnCode() {
+        this.character.pawncode = this.pawnCode;
+    }
 }

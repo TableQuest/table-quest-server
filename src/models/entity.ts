@@ -1,6 +1,8 @@
 import EntityInterface from "./interfaces/EntityInterface";
 
 export default class Entity implements EntityInterface {
+
+    pawncode: string;
     id: number;
     name: string;
     life: number;
@@ -15,6 +17,7 @@ export default class Entity implements EntityInterface {
         this.lifeMax = lifeMax;
         this.name = name;
         this.image = image;
+        this.pawncode = "";
     }
 
     setLife(life: number){

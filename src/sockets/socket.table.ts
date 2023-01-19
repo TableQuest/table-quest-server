@@ -75,9 +75,9 @@ export default class TableSocket {
 
         this.socket.on("newNpc", (data) => {
             if (this.game.newNpc !== undefined){
-                this.game.newNpc.pawnCode = data;
+                this.game.newNpc.pawncode = data;
 
-                console.log(`Associate ${this.game.newNpc.name} ${this.game.newNpc.id} with the tabgible ${this.game.newNpc.pawnCode}`);
+                console.log(`Associate ${this.game.newNpc.name} ${this.game.newNpc.id} with the tabgible ${this.game.newNpc.pawncode}`);
                 
                 if (this.game.mjSocket.isEnable){
                     this.game.mjSocket.socket.emit("newNpc", this.game.newNpc)

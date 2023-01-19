@@ -14,6 +14,7 @@ import Character from "./character";
 import EntityInterface from "./interfaces/EntityInterface";
 import Entity from "./entity";
 import Npc from "./npc";
+import Player from "./player";
 
 export enum GameState {
     INIT,
@@ -33,6 +34,7 @@ export default class Game {
     characters: Array<CharacterInterface>;
     npc: Array<Npc>;
     newNpc: Npc | undefined;
+    disconnectedPlayer: number;
     /* All the sockets of the system. */
     mjSocket: MJSocket
     playerSockets: PlayerSocket[];
@@ -64,6 +66,7 @@ export default class Game {
         }
 
         this.newNpc = undefined;
+        this.disconnectedPlayer = 0;
 
         /* Sockets */
         this.mjSocket = new MJSocket(this, io);

@@ -56,5 +56,13 @@ export default class PlayerSocket {
                 console.error(`No characters of id ${id} exists.`);
             }
         });
+
+        this.socket.on("disconnect", (reason) =>
+        {
+            console.log(`Player's socket ${this.socket.id} disconnected with reason: ${reason}.`);
+            this.game.tableSocket.socket.emit("pauseGame", `Player ${this.player.id} has disconnected.`); //TODO mise en pause du jeu
+            this.game.disconnectedPlayer += 1;
+            console.log(`Waiting for ${this.game.disconnectedPlayer} players.`);
+        });
     }
 }

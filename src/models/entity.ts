@@ -1,18 +1,25 @@
 import EntityInterface from "./interfaces/EntityInterface";
 
 export default class Entity implements EntityInterface {
+
+    pawncode: string;
     id: number;
     name: string;
     life: number;
     lifeMax: number;
     description: string;
+    image: string;
 
-    constructor(id: number, name: string, life: number, lifeMax: number, description: string) {
+    diceVal: number;
+
+    constructor(id: number, name: string, life: number, lifeMax: number, description: string, image:string) {
         this.description = description;
         this.id = id;
         this.life = life;
         this.lifeMax = lifeMax;
         this.name = name;
+        this.image = image;
+        this.pawncode = "";
     }
 
     setLife(life: number){

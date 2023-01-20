@@ -22,7 +22,7 @@ export default class TableQuestAPI {
 
         this.app.get('/characters', (req, res) => {
             res.status(200)
-                .send(JSON.stringify(data.characters))
+                .send(JSON.stringify({ "characters": data.characters }))
         });
 
         this.app.get('/npcs', (req, res) => {
@@ -56,12 +56,29 @@ export default class TableQuestAPI {
                 .send(JSON.stringify(charactersObj));
         });
 
+        this.app.get('/players/:playerId/characterInfo', (req, res) => {
+            if (this.game.isPlayerExist(req.params.playerId)) {
+                let playerChar = this.game.getPlayer(req.params.playerId)!.character;
+                if (!(playerChar == null)) {
+                    res.status(200)
+                        .send(JSON.stringify({
+                            "id": playerChar.id,
+                            "life": playerChar.life,
+                            "mana": playerChar.mana
+                        }));
+                }
+                else {
+                    res.sendStatus(204);
+                }
+            }
+        })
+
         this.app.get('/players/:playerId/skills', (req, res) => {
             if (this.game.isPlayerExist(req.params.playerId)) {
                 let playerChar = this.game.getPlayer(req.params.playerId)!.character;
                 res.status(200)
                     .send(JSON.stringify(playerChar.skills));
             }
-        })
+        });
     }
 }

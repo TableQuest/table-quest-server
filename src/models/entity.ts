@@ -2,6 +2,8 @@ import EntityInterface from "./interfaces/EntityInterface";
 import SkillInterface from "./interfaces/SkillInterface";
 
 export default class Entity implements EntityInterface {
+
+    pawncode: string;
     id: number;
     name: string;
     life: number;
@@ -10,6 +12,8 @@ export default class Entity implements EntityInterface {
     image: string;
     skills: SkillInterface[];
 
+    diceVal: number;
+
     constructor(id: number, name: string, life: number, lifeMax: number, description: string, image:string, skills: SkillInterface[]) {
         this.description = description;
         this.id = id;
@@ -17,6 +21,7 @@ export default class Entity implements EntityInterface {
         this.lifeMax = lifeMax;
         this.name = name;
         this.image = image;
+        this.pawncode = "";
         this.skills = skills;
     }
 

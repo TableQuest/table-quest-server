@@ -65,20 +65,20 @@ export default class MJSocket {
                     console.log("GameState is now "+this.game.gameState);
 
                     break;
-                case "TURN":
-                    console.log(`State ${data} not implemented yet.`);
-                    //this.game.updateGameState(GameState.TURN);
-                    //this.game.tableSocket?.socket.emit("switchStateRestricted", ""); 
+                case "INIT_TURN_ORDER":
+                    this.game.updateGameState(GameState.INIT_TURN_ORDER);
+                    this.game.tableSocket?.socket.emit("switchState", "INIT_TURN_ORDER");
+                    this.game.turnOrder.initOrder();
                     break;
                 default:
                     console.log(`State ${data} not recognized.`);
             }
             console.log(`GameState is now ${GameState[this.game.gameState]}`);
         })
-        
+
         this.socket.on("playerMove", (data) => {
             console.log("Send to table move");
-            
+
             this.game.tableSocket?.socket.emit("playerMove", data);
  
         })
@@ -96,12 +96,34 @@ export default class MJSocket {
                 console.log(`Adding new npc ${newNpc.id} ${newNpc.name}`);
 
                 if (this.game.tableSocket.isEnable){
-                    this.game.tableSocket.socket.emit("newNpc", {});
+                    let newNpcString = JSON.stringify(this.game.newNpc);
+                    this.game.tableSocket.socket.emit("newNpc", newNpcString);
                 }
             }
             else {
                 console.error(`No npc of id ${id} exists.`);
             }
+        });
+
+        this.socket.on("nextTurn", () => {
+            if (this.game.gameState === GameState.TURN_ORDER)
+            {
+                this.game.turnOrder.next();
+            }
+        });
+
+        this.socket.on("dice", (data) => {
+            let json = JSON.parse(data);
+
+            if (json.playerId !== undefined && json.diceId !== undefined && json.value !== undefined) {
+                this.game.diceManager.checkDiceValue(json.playerId, json.diceId, json.value);
+            }
+            else {
+                console.log("Dice info not correct : "+ data);
+            }
+        });
+
+
         });
 
         this.socket.on("attackNpc", (data) => {
@@ -114,7 +136,7 @@ export default class MJSocket {
             // aplly the effects
             var modifiedLife = this.game.gameSocket.applySkillNpc(targetId, targetIsNpc, skill);
 
-            // send changement 
+            // send changement
             if (targetIsNpc){
                 console.log(`Npc ${npcPawnCode} attack npc ${targetId} and set is life to ${modifiedLife}`)
                 this.socket.emit("updateInfoNpc", {pawnCode:targetId, variable:"life", value:modifiedLife});

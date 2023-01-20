@@ -1,6 +1,4 @@
-import { Server, Socket } from "socket.io";
-import { DefaultEventsMap } from "socket.io/dist/typed-events";
-import { idText } from "typescript";
+import {Server, Socket} from "socket.io";
 import Game from "../models/game";
 
 
@@ -69,18 +67,23 @@ export default class TableSocket {
         });
 
         this.socket.on("playerMove", (data) => {
-            console.log("Movement of player id : " + data);
-            this.socket.emit("playerMove", JSON.stringify({"playerId": data, "speed": 2}));
-        })
+            if (this.game.turnOrder.isPlayerTurn(data)) {
+                console.log("Movement of player id : " + data);
+                this.socket.emit("playerMove", JSON.stringify({"playerId": data, "speed": 2}));
+            }
+            else {
+                console.log(`Player ${data} can't move !`)
+            }
+        });
 
         this.socket.on("newNpc", (data) => {
             if (this.game.newNpc !== undefined){
-                this.game.newNpc.pawnCode = data;
+                this.game.newNpc.pawncode = data;
 
-                console.log(`Associate ${this.game.newNpc.name} ${this.game.newNpc.id} with the tabgible ${this.game.newNpc.pawnCode}`);
+                console.log(`Associate ${this.game.newNpc.name} ${this.game.newNpc.id} with the tabgible ${this.game.newNpc.pawncode}`);
                 
                 if (this.game.mjSocket.isEnable){
-                    this.game.mjSocket.socket.emit("newNpc", this.game.newNpc.pawnCode)
+                    this.game.mjSocket.socket.emit("newNpc", this.game.newNpc.pawncode)
                     console.log("send newNpc to mj");
                 }
                 this.game.npcTable.push(this.game.newNpc);
@@ -88,6 +91,17 @@ export default class TableSocket {
                 this.game.newNpc = undefined;
 
             }
-        })
+        });
+
+        this.socket.on("dice", (data) => {
+            let json = JSON.parse(data);
+
+            if (json.playerId !== undefined && json.diceId !== undefined && json.value !== undefined) {
+                this.game.diceManager.checkDiceValue(json.playerId, json.diceId, json.value);
+            }
+            else {
+                console.log("Dice info not correct : "+ data);
+            }
+        });
     }
 }

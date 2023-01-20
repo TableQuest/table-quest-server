@@ -1,5 +1,5 @@
-import { Server, Socket } from "socket.io";
-import Game from "../models/game";
+import {Server, Socket} from "socket.io";
+import Game, {GameState} from "../models/game";
 import Player from "../models/player";
 import Character from "../models/character";
 
@@ -39,6 +39,7 @@ export default class PlayerSocket {
              */
             if (character !== undefined) {
                 this.player.character = new Character(character.id, character.name, character.lifeMax, character.life, character.manaMax, character.mana, character.description, character.speed, character.skills, character.image);
+                this.player.setPawnCode();
                 console.log(`Update the character of the player ${this.player.id} with ${this.player.character.name} Successfully.`);
 
                 /**
@@ -51,10 +52,23 @@ export default class PlayerSocket {
                         "character": this.player.character
                     });
                 }
+                this.game.tableSocket?.socket?.emit("updateInfoCharacter",{ playerId:character.id, variable:"life", value:character.life});
+                this.game.tableSocket?.socket?.emit("updateInfoCharacter",{ playerId:character.id, variable:"lifeMax", value:character.lifeMax});
+                this.game.tableSocket?.socket?.emit("updateInfoCharacter",{ playerId:character.id, variable:"mana", value:character.mana});
+                this.game.tableSocket?.socket?.emit("updateInfoCharacter",{ playerId:character.id, variable:"manaMax", value:character.manaMax});
             }
             else {
                 console.error(`No characters of id ${id} exists.`);
             }
+        });
+
+        this.socket.on("disconnect", (reason) =>
+        {
+            console.log(`Player's socket ${this.socket.id} disconnected with reason: ${reason}.`);
+            this.game.pauseGame();
+            this.game.tableSocket.socket.emit("pauseGame", `Player ${this.player.id} has disconnected.`);
+            this.game.disconnectedPlayer += 1;
+            console.log(`Waiting for ${this.game.disconnectedPlayer} players.`);
         });
     }
 }

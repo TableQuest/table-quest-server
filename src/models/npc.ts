@@ -7,4 +7,5 @@ export default class Npc extends Entity{
     constructor(id: number, name: string, lifeMax: number, life: number, description: string, image: string, skills: SkillInterface[]) {
         super(id, name, life, lifeMax, description, image, skills);
     }
+
 }

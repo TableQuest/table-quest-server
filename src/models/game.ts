@@ -15,11 +15,13 @@ import Npc from "./npc";
 import TurnOrder from "../game/TurnOrder";
 import DiceManager from "../game/DiceManager";
 import Entity from "./entity";
+import Player from "./player";
 
 export enum GameState {
     INIT,
     FREE,
     RESTRICTED,
+    PAUSE,
     INIT_TURN_ORDER,
     TURN_ORDER
 }
@@ -30,12 +32,11 @@ export enum GameState {
 export default class Game {
     app: App;
 
-    gameState: GameState;
-
     /* Static models of the different characters and npc. */
     characters: Array<CharacterInterface>;
     npc: Array<Npc>;
     newNpc: Npc | undefined;
+
     /* All the sockets of the system. */
     mjSocket: MJSocket
     playerSockets: PlayerSocket[];
@@ -46,6 +47,12 @@ export default class Game {
 
     /* REST API of the System. */
     api : TableQuestAPI;
+
+
+    /*Others*/
+    gameState: GameState;
+    disconnectedPlayer: number;
+    previousGameState: GameState;
     turnOrder: TurnOrder;
     diceManager: DiceManager;
 
@@ -69,6 +76,7 @@ export default class Game {
         }
 
         this.newNpc = undefined;
+        this.disconnectedPlayer = 0;
         this.turnOrder = new TurnOrder(this);
         this.diceManager = new DiceManager(this);
 
@@ -121,7 +129,8 @@ export default class Game {
     }
 
     isNpcExist(npcId: string) {
-        return this.npc.find(n => n.pawncode === npcId) != undefined;
+        return this.npcTable.find(n => {
+            return n.pawnCode === npcId}) != undefined;
     }
 
     isNpcPlacedExist(npcId: string) {
@@ -155,6 +164,20 @@ export default class Game {
                 return;
             }
         })
+    }
+
+    pauseGame() {
+        this.previousGameState = this.gameState;
+        this.updateGameState(GameState.PAUSE);
+    }
+
+    getEntity(id: string)
+    {
+        if(this.playerSockets.find(n => n.player.id === id) != undefined) {
+            return this.playerSockets.find(n => n.player.id === id)!.player.character;
+        } else {
+            return this.npcTable.find(n => n.pawnCode === id)
+        }
     }
 
     updateGameState(newState: GameState) {

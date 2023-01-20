@@ -2,6 +2,7 @@ import {Server, Socket} from "socket.io";
 import Game, {GameState} from "../models/game";
 import MJ from "../models/mj";
 import Npc from "../models/npc";
+import Skill from "../models/skill";
 
 
 /**
@@ -101,6 +102,21 @@ export default class MJSocket {
             else {
                 console.error(`No npc of id ${id} exists.`);
             }
+        });
+
+        this.socket.on("attackNpc", (data) => {
+            console.log("npc attack "+data);
+
+            let json = JSON.parse(data);
+            let npcPawnCode = json.npcId;
+            let targetId = json.targetId;
+            let targetIsNpc = data.targetIsNpc;
+            let skill = new Skill(json.skill.id, json.skill.name, json.skill.manaCost, json.skill.range, json.skill.maxTarget, json.skill.type, json.skill.statModifier, json.skill.healing, json.skill.image);
+
+            this.game.gameSocket.applySkillNpc(targetId, targetIsNpc, skill);
+
+
+        
         })
     }
 }

@@ -1,5 +1,5 @@
 import {Server, Socket} from "socket.io";
-import Game, {GameState} from "../models/game";
+import Game from "../models/game";
 
 
 /**
@@ -83,7 +83,7 @@ export default class TableSocket {
                 console.log(`Associate ${this.game.newNpc.name} ${this.game.newNpc.id} with the tabgible ${this.game.newNpc.pawncode}`);
                 
                 if (this.game.mjSocket.isEnable){
-                    this.game.mjSocket.socket.emit("newNpc", this.game.newNpc.pawnCode)
+                    this.game.mjSocket.socket.emit("newNpc", this.game.newNpc.pawncode)
                     console.log("send newNpc to mj");
                 }
                 this.game.npcTable.push(this.game.newNpc);

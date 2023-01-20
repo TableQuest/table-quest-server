@@ -30,7 +30,7 @@ export default class GameSocket{
     }
 
     public updateInfoNpc(pawnCode: string, variable: string, value:string){
-        let npc = this.game.npcTable.find(n => n.pawnCode = pawnCode);
+        let npc = this.game.npcTable.find(n => n.pawncode = pawnCode);
 
         if (npc){
             console.log("pawnCode "+ pawnCode+" variable "+variable+" value "+value);
@@ -63,7 +63,8 @@ export default class GameSocket{
         let playerCharacter = playerSocket!.player.character;
         let skill = playerCharacter.getSkill(skillId);
         let targetSocketPlayer = this.findPlayerSocket(targetId);
-        let targetNpc = this.game.npcTable.find(n => n.pawnCode === targetId)
+        let targetNpc = this.game.npcTable.find(n => n.pawncode === targetId)
+
         console.log("Try using skill");
         if (this.isSkillUsable(playerCharacter, skill, targetId) && this.game.turnOrder.isPlayerTurn(playerId)) {
             console.log("skill usable");

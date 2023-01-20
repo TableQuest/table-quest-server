@@ -15,7 +15,6 @@ import Npc from "./npc";
 import TurnOrder from "../game/TurnOrder";
 import DiceManager from "../game/DiceManager";
 import Entity from "./entity";
-import Player from "./player";
 
 export enum GameState {
     INIT,
@@ -130,7 +129,7 @@ export default class Game {
 
     isNpcExist(npcId: string) {
         return this.npcTable.find(n => {
-            return n.pawnCode === npcId}) != undefined;
+            return n.pawncode === npcId}) != undefined;
     }
 
     isNpcPlacedExist(npcId: string) {
@@ -176,7 +175,7 @@ export default class Game {
         if(this.playerSockets.find(n => n.player.id === id) != undefined) {
             return this.playerSockets.find(n => n.player.id === id)!.player.character;
         } else {
-            return this.npcTable.find(n => n.pawnCode === id)
+            return this.npcTable.find(n => n.pawncode === id)
         }
     }
 

@@ -106,22 +106,18 @@ export default class MJSocket {
 
         this.socket.on("attackNpc", (data) => {
             let json = JSON.parse(data);
-            console.log("attckNpc recieved ")
-            console.log(json);
 
             let npcPawnCode = json.launchId;
             let targetId = json.targetId;
             let targetIsNpc = json.targetIsNpc;
             let skill = new Skill(json.skill.id, json.skill.name, json.skill.manaCost, json.skill.range, json.skill.maxTarget, json.skill.type, json.skill.statModifier, json.skill.healing, json.skill.image);
-            console.log("Skill stat modifier")
-            console.log(skill.statModifier);
             // aplly the effects
             var modifiedLife = this.game.gameSocket.applySkillNpc(targetId, targetIsNpc, skill);
 
             // send changement 
             if (targetIsNpc){
                 console.log(`Npc ${npcPawnCode} attack npc ${targetId} and set is life to ${modifiedLife}`)
-                this.socket.emit("updateNpcInfo", {pawnCode:targetId, variable:"life", value:modifiedLife});
+                this.socket.emit("updateInfoNpc", {pawnCode:targetId, variable:"life", value:modifiedLife});
                 this.game.tableSocket?.socket.emit("updateNpcInfo", {pawnCode:targetId, variable:"life", value:modifiedLife});
 
             }

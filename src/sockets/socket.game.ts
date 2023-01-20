@@ -118,14 +118,15 @@ export default class GameSocket{
     applySkillNpc(targetId: string, isTargetNpc:boolean, skill:SkillInterface){
         if (isTargetNpc) // the target is a npc
         {
-            let targetNpc = this.game.npcTable.find( n => { n.pawnCode = targetId})
+            let targetNpc = this.game.npcTable.find( n => ( n.pawnCode == targetId))
+            
             if (targetNpc != undefined){
                 if (skill.healing){
-                    targetNpc?.setLife(targetNpc.life + skill.statModifier);
+                    targetNpc.setLife(targetNpc.life + skill.statModifier);
                     return targetNpc.life;
                 }
                 else{
-                    targetNpc?.setLife(targetNpc.life - skill.statModifier);
+                    targetNpc.setLife(targetNpc.life - skill.statModifier);
                     return targetNpc.life;
                 }
             }

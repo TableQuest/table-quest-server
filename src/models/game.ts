@@ -17,7 +17,6 @@ import Npc from "./npc";
 import Player from "./player";
 import TurnOrder from "../game/TurnOrder";
 import DiceManager from "../game/DiceManager";
-import Entity from "./entity";
 
 export enum GameState {
     INIT,

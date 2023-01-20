@@ -40,6 +40,17 @@ export default class MJSocket {
             }
         })
 
+        this.socket.on("updateInfoNpc", (data) => {
+            console.log("update npc info " + data);
+            if (!this.game.verifyGameState(GameState.INIT)) {
+                let json = JSON.parse(data);
+                this.game.gameSocket.updateInfoNpc(json.pawnCode, json.variable, json.value);
+            }
+            else{
+                console.log("Cannot change npc info is the game hasn't started.");
+            }
+        })
+
         this.socket.on("switchState", (data) => {
             switch (data) {
                 case "FREE":
@@ -68,24 +79,25 @@ export default class MJSocket {
             console.log("Send to table move");
 
             this.game.tableSocket?.socket.emit("playerMove", data);
-
+ 
         })
 
         this.socket.on("newNpc", (data) => {
-            let id = +data;
+            let json = JSON.parse(data);
+            let id = Number(json.id);
+            let name = json.name;
             let npc = this.game.npc.find(char => char.id === id);
 
             if (npc !== undefined) {
-                let newNpc = new Npc(npc.id, npc.name, npc.lifeMax, npc.life, npc.description);
+                let newNpc = new Npc(npc.id, name, npc.lifeMax, npc.life,npc.description, npc.image);
                 this.game.newNpc = newNpc;
 
-                console.log(`Adding new npc ${newNpc.name}`);
+                console.log(`Adding new npc ${newNpc.id} ${newNpc.name}`);
 
                 if (this.game.tableSocket.isEnable){
                     let newNpcString = JSON.stringify(this.game.newNpc);
                     this.game.tableSocket.socket.emit("newNpc", newNpcString);
                 }
-
             }
             else {
                 console.error(`No npc of id ${id} exists.`);

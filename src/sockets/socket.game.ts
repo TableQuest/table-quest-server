@@ -2,6 +2,7 @@ import Game from "../models/game";
 import {Socket} from "socket.io";
 import SkillInterface from "../models/interfaces/SkillInterface";
 import CharacterInterface from "../models/interfaces/CharacterInterface";
+import Character from "../models/character";
 export default class GameSocket{
 
     game: Game;
@@ -39,10 +40,14 @@ export default class GameSocket{
         let playerCharacter = playerSocket!.player.character;
         let skill = playerCharacter.getSkill(skillId);
         let targetSocket = this.findPlayerSocket(targetId);
+
+        // TODO Lancé de dé pour et l'afficher sur la table + logs
+
         console.log("Try using skill");
-        if (this.isSkillUsable(playerCharacter, skill, targetId)) {
+        if (this.isSkillUsable(playerCharacter, skill, targetId) && this.game.turnOrder.isPlayerTurn(playerId)) {
             console.log("skill usable");
             this.applySkill(playerCharacter, skill!, targetId);
+            this.game.turnOrder.checkIfTargetDead(targetId);
 
             this.game.mjSocket.socket?.emit("updateInfoCharacter", {playerId:targetId, variable:"life", value:targetSocket!.player.character.life});
             this.game.mjSocket.socket?.emit("updateInfoCharacter", {playerId:playerId, variable:"mana", value:playerSocket!.player.character.mana});
@@ -59,7 +64,7 @@ export default class GameSocket{
     false otherwise.
     Sends an error message to the table socket and the MJ socket if the skill is undefined.
     */
-    isSkillUsable(playerCharacter: CharacterInterface, skill: SkillInterface | undefined, targetId: string) {
+    isSkillUsable(playerCharacter: Character, skill: SkillInterface | undefined, targetId: string) {
         if (skill == undefined) {
             let errorMessage = `Character ${playerCharacter.id} does not have that skill.`;
             console.log(errorMessage);
@@ -70,7 +75,8 @@ export default class GameSocket{
         //TODO check if target exists once NPCs are done, using a player for now
         //return (this.game.isNpcExist(targetId) && playerCharacter.hasEnoughMana(skill))
         //TODO check skill range
-        return (this.game.isPlayerExist(targetId) && playerCharacter.hasEnoughMana(skill))
+
+        return (/*this.game.isPlayerExist(targetId) &&*/ playerCharacter.hasEnoughMana(skill))
     }
 
     /*
@@ -99,4 +105,6 @@ export default class GameSocket{
             socket?.emit(message, data);
         }
     }
+
+
 }

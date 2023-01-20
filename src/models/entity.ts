@@ -10,6 +10,8 @@ export default class Entity implements EntityInterface {
     description: string;
     image: string;
 
+    diceVal: number;
+
     constructor(id: number, name: string, life: number, lifeMax: number, description: string, image:string) {
         this.description = description;
         this.id = id;

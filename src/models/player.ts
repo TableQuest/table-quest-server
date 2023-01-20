@@ -15,5 +15,6 @@ export default class Player {
 
     setPawnCode() {
         this.character.pawncode = this.pawnCode;
+        console.log(this.character.pawncode);
     }
 }

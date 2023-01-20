@@ -61,8 +61,10 @@ export default class PlayerSocket {
         {
             console.log(`Player's socket ${this.socket.id} disconnected with reason: ${reason}.`);
             this.game.pauseGame();
-            this.game.tableSocket.socket.emit("pauseGame", `Player ${this.player.id} has disconnected.`);
-            this.game.disconnectedPlayer += 1;
+            this.game.disconnectedPlayer.push(this.player.id);
+
+            let listOfPlayerIdsAsString: string = this.game.getDisconnectedPlayerIdAsString();
+            this.game.tableSocket.socket.emit("pauseGame", listOfPlayerIdsAsString);
             console.log(`Waiting for ${this.game.disconnectedPlayer} players.`);
         });
     }

@@ -50,11 +50,12 @@ export default class ConnectionSocket {
        */
       socket.on('playerConnection', (msg) => {
         let json = JSON.parse(msg);
-        if (json.menuCode !== undefined && json.pawnCode !== undefined) {
-
+        if (json.menuCode !== undefined && json.pawnCode !== undefined)
+        {
           let playerId = json.menuCode+json.pawnCode
 
-          if (!this.game.isPlayerExist(playerId) && this.game.gameState === GameState.INIT) {
+          if (!this.game.isPlayerExist(playerId) && this.game.gameState === GameState.INIT)
+          {
             let playerSocket = new PlayerSocket(
               this.game,
               playerId,
@@ -65,20 +66,28 @@ export default class ConnectionSocket {
 
             playerSocket.initWebSocket(socket);
             this.game.addPlayer(playerSocket);
+            this.game.tableSocket.socket.emit("playerConnection", playerId);
 
             console.log(`Successfully added the player ${playerSocket.player.id} with the socket ${socket.id}`);
           }
 
-          else {
+          else
+          {
             this.game.updatePlayerSocket(socket, playerId);
             console.log(`The player ${playerId} already exists, updated its socket to ${socket.id} successfully.`);
-            this.game.disconnectedPlayer = Math.max(this.game.disconnectedPlayer-1, 0);
+            this.game.disconnectedPlayer.splice(this.game.disconnectedPlayer.indexOf(playerId), 1);
             console.log(`${this.game.disconnectedPlayer} players are still off.`);
-            if (this.game.disconnectedPlayer === 0) {
 
+            if (this.game.disconnectedPlayer.length === 0)
+            {
               console.log('The game will be resumed.');
               this.game.updateGameState(this.game.previousGameState);
               this.game.tableSocket.socket.emit("resumeGame");
+            }
+            else
+            {
+              let listOfPlayerIdsAsString: string = this.game.getDisconnectedPlayerIdAsString();
+              this.game.tableSocket.socket.emit("pauseGame", listOfPlayerIdsAsString);
             }
           }
 

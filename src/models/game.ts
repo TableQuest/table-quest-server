@@ -47,7 +47,7 @@ export default class Game {
 
     /*Others*/
     gameState: GameState;
-    disconnectedPlayer: number;
+    disconnectedPlayer: string[];
     previousGameState: GameState;
 
     constructor(app: App, io: Server, express: Express) {
@@ -70,7 +70,7 @@ export default class Game {
         }
 
         this.newNpc = undefined;
-        this.disconnectedPlayer = 0;
+        this.disconnectedPlayer = [];
 
         /* Sockets */
         this.mjSocket = new MJSocket(this, io);
@@ -133,6 +133,17 @@ export default class Game {
     pauseGame() {
         this.previousGameState = this.gameState;
         this.updateGameState(GameState.PAUSE);
+    }
+
+    getDisconnectedPlayerIdAsString()
+    {
+        let listOfPlayerIdsAsString: string = "";
+
+        for (let i = 0; i < this.disconnectedPlayer.length; i++)
+        {
+            listOfPlayerIdsAsString += this.disconnectedPlayer[i]+",";
+        }
+        return listOfPlayerIdsAsString.slice(0, -1);
     }
 
     updateGameState(newState: GameState) {

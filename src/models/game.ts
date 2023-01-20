@@ -14,11 +14,13 @@ import Character from "./character";
 import EntityInterface from "./interfaces/EntityInterface";
 import Entity from "./entity";
 import Npc from "./npc";
+import Player from "./player";
 
 export enum GameState {
     INIT,
     FREE,
     RESTRICTED,
+    PAUSE
 }
 
 /**
@@ -27,12 +29,11 @@ export enum GameState {
 export default class Game {
     app: App;
 
-    gameState: GameState;
-
     /* Static models of the different characters and npc. */
     characters: Array<CharacterInterface>;
     npc: Array<Npc>;
     newNpc: Npc | undefined;
+
     /* All the sockets of the system. */
     mjSocket: MJSocket
     playerSockets: PlayerSocket[];
@@ -43,6 +44,11 @@ export default class Game {
 
     /* REST API of the System. */
     api : TableQuestAPI;
+
+    /*Others*/
+    gameState: GameState;
+    disconnectedPlayer: number;
+    previousGameState: GameState;
 
     constructor(app: App, io: Server, express: Express) {
         this.app = app;
@@ -64,6 +70,7 @@ export default class Game {
         }
 
         this.newNpc = undefined;
+        this.disconnectedPlayer = 0;
 
         /* Sockets */
         this.mjSocket = new MJSocket(this, io);
@@ -124,8 +131,13 @@ export default class Game {
         })
     }
 
-    getEntity(id: string) {
-
+    pauseGame() {
+        this.previousGameState = this.gameState;
+        this.updateGameState(GameState.PAUSE);
+    }
+    
+    getEntity(id: string) 
+    {
         if(this.playerSockets.find(n => n.player.id === id) != undefined) {
             return this.playerSockets.find(n => n.player.id === id)!.player.character;
         } else {

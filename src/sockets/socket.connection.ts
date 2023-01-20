@@ -1,5 +1,5 @@
-import { Server } from "socket.io";
-import Game from "../models/game";
+import {Server} from "socket.io";
+import Game, {GameState} from "../models/game";
 import PlayerSocket from "./socket.player";
 
 /**
@@ -19,7 +19,7 @@ export default class ConnectionSocket {
 
   defineSockets() {
     this.io.on('connection', (socket) => {
-      console.log("user connected");
+      console.log(`User connected: ${socket.id}`);
 
       /**
        * Test for the server and the sockets.
@@ -56,7 +56,7 @@ export default class ConnectionSocket {
 
           let playerId = json.menuCode+json.pawnCode
 
-          if (!this.game.isPlayerExist(playerId)) {
+          if (!this.game.isPlayerExist(playerId) && this.game.gameState === GameState.INIT) {
             let playerSocket = new PlayerSocket(
               this.game,
               playerId,
@@ -70,12 +70,19 @@ export default class ConnectionSocket {
 
             console.log(`Successfully added the player ${playerSocket.player.id} with the socket ${socket.id}`);
           }
-          else {
-            console.log(`The player ${playerId} already exists, updated the socket ${socket.id} successfully.`);
-            this.game.updatePlayerSocket(socket, playerId)
-          }
 
-          //this.game.tableSocket.socket.emit("playerConnection", playerId);
+          else {
+            this.game.updatePlayerSocket(socket, playerId);
+            console.log(`The player ${playerId} already exists, updated its socket to ${socket.id} successfully.`);
+            this.game.disconnectedPlayer = Math.max(this.game.disconnectedPlayer-1, 0);
+            console.log(`${this.game.disconnectedPlayer} players are still off.`);
+            if (this.game.disconnectedPlayer === 0) {
+
+              console.log('The game will be resumed.');
+              this.game.updateGameState(this.game.previousGameState);
+              this.game.tableSocket.socket.emit("resumeGame");
+            }
+          }
 
         } else {
           console.error("Bad Request json not correct, please give a valid json (menuCode) + (pawnCode) "+ json);

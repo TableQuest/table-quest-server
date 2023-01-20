@@ -1,5 +1,5 @@
-import { Server, Socket } from "socket.io";
-import Game from "../models/game";
+import {Server, Socket} from "socket.io";
+import Game, {GameState} from "../models/game";
 import Player from "../models/player";
 import Character from "../models/character";
 
@@ -59,6 +59,15 @@ export default class PlayerSocket {
             else {
                 console.error(`No characters of id ${id} exists.`);
             }
+        });
+
+        this.socket.on("disconnect", (reason) =>
+        {
+            console.log(`Player's socket ${this.socket.id} disconnected with reason: ${reason}.`);
+            this.game.pauseGame();
+            this.game.tableSocket.socket.emit("pauseGame", `Player ${this.player.id} has disconnected.`);
+            this.game.disconnectedPlayer += 1;
+            console.log(`Waiting for ${this.game.disconnectedPlayer} players.`);
         });
     }
 }

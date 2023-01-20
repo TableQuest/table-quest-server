@@ -18,6 +18,7 @@ export default class Character extends Entity implements CharacterInterface{
     }
 
     hasEnoughMana(skill: SkillInterface) {
+        console.log(`Player mana : ${this.mana} mana cost : ${skill!.manaCost}`);
         return skill!.manaCost <= this.mana;
     }
 

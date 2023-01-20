@@ -64,10 +64,10 @@ export default class MJSocket {
                     console.log("GameState is now "+this.game.gameState);
 
                     break;
-                case "TURN":
-                    console.log(`State ${data} not implemented yet.`);
-                    //this.game.updateGameState(GameState.TURN);
-                    //this.game.tableSocket?.socket.emit("switchStateRestricted", "");
+                case "INIT_TURN_ORDER":
+                    this.game.updateGameState(GameState.INIT_TURN_ORDER);
+                    this.game.tableSocket?.socket.emit("switchState", "INIT_TURN_ORDER");
+                    this.game.turnOrder.initOrder();
                     break;
                 default:
                     console.log(`State ${data} not recognized.`);
@@ -102,6 +102,26 @@ export default class MJSocket {
             else {
                 console.error(`No npc of id ${id} exists.`);
             }
-        })
+        });
+
+        this.socket.on("nextTurn", () => {
+            if (this.game.gameState === GameState.TURN_ORDER)
+            {
+                this.game.turnOrder.next();
+            }
+        });
+
+        this.socket.on("dice", (data) => {
+            let json = JSON.parse(data);
+
+            if (json.playerId !== undefined && json.diceId !== undefined && json.value !== undefined) {
+                this.game.diceManager.checkDiceValue(json.playerId, json.diceId, json.value);
+            }
+            else {
+                console.log("Dice info not correct : "+ data);
+            }
+        });
+
+
     }
 }

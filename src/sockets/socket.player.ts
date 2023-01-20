@@ -39,6 +39,7 @@ export default class PlayerSocket {
              */
             if (character !== undefined) {
                 this.player.character = new Character(character.id, character.name, character.lifeMax, character.life, character.manaMax, character.mana, character.description, character.speed, character.skills, character.image);
+                this.player.setPawnCode();
                 console.log(`Update the character of the player ${this.player.id} with ${this.player.character.name} Successfully.`);
 
                 /**

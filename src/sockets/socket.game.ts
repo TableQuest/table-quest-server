@@ -2,6 +2,7 @@ import Game from "../models/game";
 import {Socket} from "socket.io";
 import SkillInterface from "../models/interfaces/SkillInterface";
 import CharacterInterface from "../models/interfaces/CharacterInterface";
+import Character from "../models/character";
 export default class GameSocket{
 
     game: Game;
@@ -29,15 +30,15 @@ export default class GameSocket{
     }
 
     public updateInfoNpc(pawnCode: string, variable: string, value:string){
-        let npc = this.game.npcTable.find(n => n.pawnCode = pawnCode);
- 
+        let npc = this.game.npcTable.find(n => n.pawncode = pawnCode);
+
         if (npc){
             console.log("pawnCode "+ pawnCode+" variable "+variable+" value "+value);
-            
+
             // apply change
             npc?.updateInfo(variable, value);
 
-            // emit to the table 
+            // emit to the table
             this.game.tableSocket?.socket?.emit("updateInfoNpc", { "pawnCode":pawnCode, "variable":variable, "value":value });
 
             // emit to the mj
@@ -62,11 +63,13 @@ export default class GameSocket{
         let playerCharacter = playerSocket!.player.character;
         let skill = playerCharacter.getSkill(skillId);
         let targetSocketPlayer = this.findPlayerSocket(targetId);
-        let targetNpc = this.game.npcTable.find(n => n.pawnCode === targetId)
+        let targetNpc = this.game.npcTable.find(n => n.pawncode === targetId)
+
         console.log("Try using skill");
-        if (this.isSkillUsable(playerCharacter, skill, targetId)) {
+        if (this.isSkillUsable(playerCharacter, skill, targetId) && this.game.turnOrder.isPlayerTurn(playerId)) {
             console.log("skill usable");
             this.applySkill(playerCharacter, skill!, targetId);
+            this.game.turnOrder.checkIfTargetDead(targetId);
             let characterLife = targetSocketPlayer == null ? targetNpc!.life : targetSocketPlayer!.player.character.life;
             //doublon avec les appels de la méthode sendToSockets en dessous
             if(targetSocketPlayer != null) {
@@ -112,7 +115,7 @@ export default class GameSocket{
     false otherwise.
     Sends an error message to the table socket and the MJ socket if the skill is undefined.
     */
-    isSkillUsable(playerCharacter: CharacterInterface, skill: SkillInterface | undefined, targetId: string) {
+    isSkillUsable(playerCharacter: Character, skill: SkillInterface | undefined, targetId: string) {
         if (skill == undefined) {
             let errorMessage = `Character ${playerCharacter.id} does not have that skill.`;
             console.log(errorMessage);
@@ -148,4 +151,6 @@ export default class GameSocket{
             socket?.emit(message, data);
         }
     }
+
+
 }

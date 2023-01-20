@@ -110,8 +110,9 @@ export default class Game {
         return playerExists;
     }
 
-    isNpcExist(npcId: number) {
-        return this.npc.find(n => n.id === npcId) != undefined;
+    isNpcExist(npcId: string) {
+        return this.npcTable.find(n => {
+            return n.pawnCode === npcId}) != undefined;
     }
 
     updatePlayerSocket(socket: Socket, playerId: string) {
@@ -121,6 +122,15 @@ export default class Game {
                 return;
             }
         })
+    }
+
+    getEntity(id: string) {
+
+        if(this.playerSockets.find(n => n.player.id === id) != undefined) {
+            return this.playerSockets.find(n => n.player.id === id)!.player.character;
+        } else {
+            return this.npcTable.find(n => n.pawnCode === id)
+        }
     }
 
     updateGameState(newState: GameState) {

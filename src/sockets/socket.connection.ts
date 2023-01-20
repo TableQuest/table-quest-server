@@ -50,8 +50,8 @@ export default class ConnectionSocket {
        */
       socket.on('playerConnection', (msg) => {
         console.log(msg)
-        //let json = JSON.parse(JSON.stringify(msg));
-        let json = JSON.parse(msg);
+        let json = JSON.parse(JSON.stringify(msg));
+        //let json = JSON.parse(msg);
         if (json.menuCode !== undefined && json.pawnCode !== undefined) {
 
           let playerId = json.menuCode+json.pawnCode

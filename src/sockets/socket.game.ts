@@ -69,19 +69,17 @@ export default class GameSocket{
             this.applySkill(playerCharacter, skill!, targetId);
             let characterLife = targetSocketPlayer == null ? targetNpc!.life : targetSocketPlayer!.player.character.life;
             //doublon avec les appels de la méthode sendToSockets en dessous
-            this.game.mjSocket.socket?.emit("updateInfoCharacter", {
-                playerId: targetId,
-                variable: "life",
-                value: characterLife
-            });
-            this.game.mjSocket.socket?.emit("updateInfoCharacter", {
-                playerId: playerId,
-                variable: "mana",
-                value: playerSocket!.player.character.mana
-            });
-
-
             if(targetSocketPlayer != null) {
+                this.game.mjSocket.socket?.emit("updateInfoCharacter", {
+                    playerId: targetId,
+                    variable: "life",
+                    value: characterLife
+                });
+                this.game.mjSocket.socket?.emit("updateInfoCharacter", {
+                    playerId: playerId,
+                    variable: "mana",
+                    value: playerSocket!.player.character.mana
+                });
                 this.sendToSockets("updateInfoCharacter", {
                         playerId: targetId,
                         variable: "life",
@@ -94,6 +92,17 @@ export default class GameSocket{
                         value: playerSocket!.player.character.mana
                     },
                     [this.game.mjSocket.socket, playerSocket!.socket]);
+            } else {
+                this.game.mjSocket.socket?.emit("updateInfoNpc", {
+                    pawnCode: targetId,
+                    variable: "life",
+                    value: characterLife
+                });
+                this.game.mjSocket.socket?.emit("updateInfoCharacter", {
+                    playerId: playerId,
+                    variable: "mana",
+                    value: playerSocket!.player.character.mana
+                });
             }
         }
     }

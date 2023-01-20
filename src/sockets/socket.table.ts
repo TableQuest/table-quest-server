@@ -84,6 +84,7 @@ export default class TableSocket {
                     console.log("send newNpc to mj");
                 }
                 this.game.npcTable.push(this.game.newNpc);
+                console.log(this.game.npcTable);
                 this.game.newNpc = undefined;
 
             }

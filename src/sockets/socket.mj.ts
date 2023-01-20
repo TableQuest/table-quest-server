@@ -105,18 +105,32 @@ export default class MJSocket {
         });
 
         this.socket.on("attackNpc", (data) => {
-            console.log("npc attack "+data);
-
             let json = JSON.parse(data);
-            let npcPawnCode = json.npcId;
+            console.log("attckNpc recieved ")
+            console.log(json);
+
+            let npcPawnCode = json.launchId;
             let targetId = json.targetId;
-            let targetIsNpc = data.targetIsNpc;
+            let targetIsNpc = json.targetIsNpc;
             let skill = new Skill(json.skill.id, json.skill.name, json.skill.manaCost, json.skill.range, json.skill.maxTarget, json.skill.type, json.skill.statModifier, json.skill.healing, json.skill.image);
+            console.log("Skill stat modifier")
+            console.log(skill.statModifier);
+            // aplly the effects
+            var modifiedLife = this.game.gameSocket.applySkillNpc(targetId, targetIsNpc, skill);
 
-            this.game.gameSocket.applySkillNpc(targetId, targetIsNpc, skill);
+            // send changement 
+            if (targetIsNpc){
+                console.log(`Npc ${npcPawnCode} attack npc ${targetId} and set is life to ${modifiedLife}`)
+                this.socket.emit("updateNpcInfo", {pawnCode:targetId, variable:"life", value:modifiedLife});
+                this.game.tableSocket?.socket.emit("updateNpcInfo", {pawnCode:targetId, variable:"life", value:modifiedLife});
 
-
-        
+            }
+            else{
+                console.log(`Npc ${npcPawnCode} attack player ${targetId} and set is life to ${modifiedLife}`)
+                this.socket.emit("updateInfoCharacter", {playerId:targetId, variable:"life", value:modifiedLife});
+                this.game.tableSocket?.socket.emit("updateInfoCharacter", {playerId:targetId, variable:"life", value:modifiedLife});
+                this.game.gameSocket.findPlayerSocket(targetId)?.socket.emit("updateInfoCharacter", {variable:"life", value:modifiedLife});
+            }
         })
     }
 }

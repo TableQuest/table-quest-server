@@ -12,7 +12,7 @@ export default class Skill implements SkillInterface {
     healing: boolean;
     image: string;
 
-    constructor(id: number, name: string, manaCost: number, range: number, maxTarget: number, type: string, statModifier: number, healing: bool, image: string) {
+    constructor(id: number, name: string, manaCost: number, range: number, maxTarget: number, type: string, statModifier: number, healing: boolean, image: string) {
         this.id = id;
         this.name = name;
         this.manaCost = manaCost;

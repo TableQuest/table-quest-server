@@ -119,21 +119,33 @@ export default class GameSocket{
         if (isTargetNpc) // the target is a npc
         {
             let targetNpc = this.game.npcTable.find( n => { n.pawnCode = targetId})
-            if (skill.healing){
-                targetNpc?.setLife(targetNpc.life + skill.statModifier);
+            if (targetNpc != undefined){
+                if (skill.healing){
+                    targetNpc?.setLife(targetNpc.life + skill.statModifier);
+                    return targetNpc.life;
+                }
+                else{
+                    targetNpc?.setLife(targetNpc.life - skill.statModifier);
+                    return targetNpc.life;
+                }
             }
             else{
-                targetNpc?.setLife(targetNpc.life - skill.statModifier);
+                console.log("Didn't find npc "+targetId);
+                console.log(this.game.npcTable);
+                return null;
             }
+
         }
         else // the target is a character
         {
             let targetCharacter = this.game.getPlayer(targetId)!.character;
             if (skill.healing){
                 targetCharacter.setLife(targetCharacter.life + skill.statModifier);
+                return targetCharacter.life;
             }
             else {
-                targetCharacter.setLife(targetCharacter.life + skill.statModifier);
+                targetCharacter.setLife(targetCharacter.life - skill.statModifier);
+                return targetCharacter.life;
             }
         }
 

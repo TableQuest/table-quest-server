@@ -58,14 +58,14 @@ export default class Game {
         this.characters = [];
         for (let i=0; i<gameJson.characters.length; i++){
             let c = <Character>JSON.parse(JSON.stringify(gameJson.characters[i]))
-            let objC :Character = new Character(c.id, c.name, c.lifeMax, c.life, c.manaMax, c.mana, c.description, c.speed, c.skills);
+            let objC :Character = new Character(c.id, c.name, c.lifeMax, c.life, c.manaMax, c.mana, c.description, c.speed, c.skills, c.image);
             this.characters.push(objC);
         }
 
         this.npc = [];
         for (let i=0; i<gameJson.npc.length; i++){
             let n = <Npc>JSON.parse(JSON.stringify(gameJson.npc[i]))
-            let objN = new Npc(n.id, n.name, n.lifeMax, n.life, n.description);
+            let objN = new Npc(n.id, n.name, n.lifeMax, n.life, n.description, n.image);
             this.npc.push(objN);
         }
 
@@ -117,8 +117,9 @@ export default class Game {
         return playerExists;
     }
 
-    isNpcExist(npcId: number) {
-        return this.npc.find(n => n.id === npcId) != undefined;
+    isNpcExist(npcId: string) {
+        return this.npcTable.find(n => {
+            return n.pawnCode === npcId}) != undefined;
     }
 
     updatePlayerSocket(socket: Socket, playerId: string) {
@@ -133,6 +134,15 @@ export default class Game {
     pauseGame() {
         this.previousGameState = this.gameState;
         this.updateGameState(GameState.PAUSE);
+    }
+    
+    getEntity(id: string) 
+    {
+        if(this.playerSockets.find(n => n.player.id === id) != undefined) {
+            return this.playerSockets.find(n => n.player.id === id)!.player.character;
+        } else {
+            return this.npcTable.find(n => n.pawnCode === id)
+        }
     }
 
     updateGameState(newState: GameState) {

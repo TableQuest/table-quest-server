@@ -38,7 +38,7 @@ export default class PlayerSocket {
              * Verification of the character ID.
              */
             if (character !== undefined) {
-                this.player.character = new Character(character.id, character.name, character.lifeMax, character.life, character.manaMax, character.mana, character.description, character.speed, character.skills);
+                this.player.character = new Character(character.id, character.name, character.lifeMax, character.life, character.manaMax, character.mana, character.description, character.speed, character.skills, character.image);
                 console.log(`Update the character of the player ${this.player.id} with ${this.player.character.name} Successfully.`);
 
                 /**
@@ -51,6 +51,10 @@ export default class PlayerSocket {
                         "character": this.player.character
                     });
                 }
+                this.game.tableSocket?.socket?.emit("updateInfoCharacter",{ playerId:character.id, variable:"life", value:character.life});
+                this.game.tableSocket?.socket?.emit("updateInfoCharacter",{ playerId:character.id, variable:"lifeMax", value:character.lifeMax});
+                this.game.tableSocket?.socket?.emit("updateInfoCharacter",{ playerId:character.id, variable:"mana", value:character.mana});
+                this.game.tableSocket?.socket?.emit("updateInfoCharacter",{ playerId:character.id, variable:"manaMax", value:character.manaMax});
             }
             else {
                 console.error(`No characters of id ${id} exists.`);

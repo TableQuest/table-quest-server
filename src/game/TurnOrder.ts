@@ -52,7 +52,7 @@ export default class TurnOrder {
             this.currentEntityTurnIndex = 0;
             console.log(`All players and npc did their speed throw for the turn order. Let's fight !`);
             console.log("Game State is now TURN_ORDER");
-            this.game.tableSocket?.socket.emit("switchState", "INIT_TURN_ORDER");
+            this.game.tableSocket?.socket.emit("switchState", "TURN_ORDER");
             this.sendOrderList();
         }
     }

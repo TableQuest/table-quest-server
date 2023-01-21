@@ -73,9 +73,8 @@ export default class MJSocket {
                 default:
                     console.log(`State ${data} not recognized.`);
             }
-            let logText = `GameState is now ${GameState[this.game.gameState]}`;
-            this.game.logger.log("Images/information", "Game State", logText).sendToEveryone();
-            console.log(logText);
+            this.game.logger.log("Images/information", "Game State", `GameState is now ${GameState[this.game.gameState]}`)
+                .sendToEveryone();
         })
 
         this.socket.on("playerMove", (data) => {

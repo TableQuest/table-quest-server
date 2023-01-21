@@ -18,6 +18,7 @@ export default class Logger {
             this.logs.splice(0,1);
         }
         this.logs.push(log);
+        console.log(logText);
         return log;
     }
 }

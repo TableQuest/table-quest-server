@@ -40,8 +40,6 @@ export default class PlayerSocket {
             if (character !== undefined) {
                 this.player.character = new Character(character.id, character.name, character.lifeMax, character.life, character.manaMax, character.mana, character.description, character.speed, character.skills, character.image);
                 this.player.setPawnCode();
-                let logText = `Update the character of the player ${this.player.id} with ${this.player.character.name} successfully.`;
-                console.log(logText);
 
                 /**
                  * Send request to the MJ only if he is connected to the server.
@@ -52,7 +50,11 @@ export default class PlayerSocket {
                         "player": this.player.id,
                         "character": this.player.character
                     });
-                    this.game.logger.log("Images/information", "Character Selection", logText).sendTo(this.game.mjSocket.socket);
+
+                    this.game.logger.log("Images/information",
+                        "Character Selection",
+                        `Update the character of the player ${this.player.id} with ${this.player.character.name} successfully.`)
+                        .sendTo(this.game.mjSocket.socket);
                 }
                 this.game.tableSocket?.socket?.emit("characterSelection",{ playerId:this.player.id, character:this.player.character.name});
                 this.game.tableSocket?.socket?.emit("updateInfoCharacter",{ playerId:this.player.id, variable:"life", value:character.life});

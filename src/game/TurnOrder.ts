@@ -52,7 +52,9 @@ export default class TurnOrder {
             this.currentEntityTurnIndex = 0;
             console.log(`All players and npc did their speed throw for the turn order. Let's fight !`);
             console.log("Game State is now TURN_ORDER");
-            this.game.tableSocket?.socket.emit("switchState", "INIT_TURN_ORDER");
+            this.game.logger.log("Images/information", "Game State", `GameState is now ${GameState[this.game.gameState]}`)
+                .sendToEveryone();
+            this.game.tableSocket?.socket.emit("switchState", "TURN_ORDER");
             this.sendOrderList();
         }
     }
@@ -107,6 +109,10 @@ export default class TurnOrder {
         if (this.currentEntityTurnIndex >= this.orderList.length) this.currentEntityTurnIndex = 0;
         console.log(`Turn Order : Current Turn : ${this.orderList[this.currentEntityTurnIndex].name}`);
         this.game.tableSocket?.socket.emit("turnOrderNext", {});
+        this.game.logger.log(this.orderList[this.currentEntityTurnIndex].image,
+            "Game",
+            `${this.orderList[this.currentEntityTurnIndex].name} is acting.`)
+            .sendToEveryone();
     }
 
     checkIfTargetDead(targetId: string) {

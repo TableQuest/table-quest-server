@@ -11,10 +11,12 @@ import gameJson from '../../data/game.json';
 import CharacterInterface from "./interfaces/CharacterInterface";
 import GameSocket from "../sockets/socket.game";
 import Character from "./character";
+import EntityInterface from "./interfaces/EntityInterface";
+import Entity from "./entity";
 import Npc from "./npc";
+import Player from "./player";
 import TurnOrder from "../game/TurnOrder";
 import DiceManager from "../game/DiceManager";
-import Entity from "./entity";
 
 export enum GameState {
     INIT,
@@ -50,7 +52,7 @@ export default class Game {
 
     /*Others*/
     gameState: GameState;
-    disconnectedPlayer: number;
+    disconnectedPlayer: string[];
     previousGameState: GameState;
     turnOrder: TurnOrder;
     diceManager: DiceManager;
@@ -75,7 +77,7 @@ export default class Game {
         }
 
         this.newNpc = undefined;
-        this.disconnectedPlayer = 0;
+        this.disconnectedPlayer = [];
         this.turnOrder = new TurnOrder(this);
         this.diceManager = new DiceManager(this);
 
@@ -115,10 +117,7 @@ export default class Game {
     isPlayerExist(playerId: string) {
         let playerExists = false;
 
-        console.log(`isPlayerExist ? : playerId ${playerId}`);
-
         this.playerSockets.forEach(playerSocket => {
-            console.log("isPlayerExist ? : player in loop : "+playerSocket.player.id);
             if (playerSocket.player.id === playerId) {
                 playerExists = true;
             }
@@ -168,6 +167,17 @@ export default class Game {
     pauseGame() {
         this.previousGameState = this.gameState;
         this.updateGameState(GameState.PAUSE);
+    }
+
+    getDisconnectedPlayerIdAsString()
+    {
+        let listOfPlayerIdsAsString: string = "";
+
+        for (let i = 0; i < this.disconnectedPlayer.length; i++)
+        {
+            listOfPlayerIdsAsString += this.disconnectedPlayer[i]+",";
+        }
+        return listOfPlayerIdsAsString.slice(0, -1);
     }
 
     getEntity(id: string)

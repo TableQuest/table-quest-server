@@ -34,7 +34,7 @@ export default class MJSocket {
             if (!this.game.verifyGameState(GameState.INIT)) {
                 console.log("apply update info");
                 let json = JSON.parse(data);
-                this.game.gameSocket.updateInfoCharacter(json.playerId,json.variable, json.value);
+                    this.game.gameSocket.updateInfoCharacter(json.playerId,json.variable, json.value);
             }
             else {
                 console.log("Cannot change characters info if the game hasn't started.");

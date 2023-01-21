@@ -31,16 +31,16 @@ export default class TurnOrder {
 
     addEntity(entity: Entity, diceValue: number) {
         console.log(`Adding entity ${entity.name} with id ${entity.pawncode} !`)
-        let index = 0;
-        for (let i = 0; i < this.orderList.length; i++) {
+        let index = this.orderList.length-1;
+        for (let i = this.orderList.length-1; i >= 0; i--) {
             let e = this.orderList[i];
             if (diceValue >= e.diceVal) {
                 index = i;
             }
         }
         entity.diceVal = diceValue;
-        this.orderList.splice(index+1, 0, entity);
-        console.log(`Adding the entity to the position ${index+1} to the order list !`);
+        this.orderList.splice(index, 0, entity);
+        console.log(`Adding the entity to the position ${index} to the order list !`);
         this.removeEntityTbd(entity);
     }
 

@@ -72,7 +72,7 @@ export default class Game {
         this.npc = [];
         for (let i=0; i<gameJson.npc.length; i++){
             let n = <Npc>JSON.parse(JSON.stringify(gameJson.npc[i]))
-            let objN = new Npc(n.id, n.name, n.lifeMax, n.life, n.description, n.image);
+            let objN = new Npc(n.id, n.name, n.lifeMax, n.life, n.description, n.image, n.skills);
             this.npc.push(objN);
         }
 

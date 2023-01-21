@@ -2,6 +2,7 @@ import {Server, Socket} from "socket.io";
 import Game, {GameState} from "../models/game";
 import MJ from "../models/mj";
 import Npc from "../models/npc";
+import Skill from "../models/skill";
 
 
 /**
@@ -89,7 +90,7 @@ export default class MJSocket {
             let npc = this.game.npc.find(char => char.id === id);
 
             if (npc !== undefined) {
-                let newNpc = new Npc(npc.id, name, npc.lifeMax, npc.life,npc.description, npc.image);
+                let newNpc = new Npc(npc.id, name, npc.lifeMax, npc.life,npc.description, npc.image, npc.skills);
                 this.game.newNpc = newNpc;
 
                 console.log(`Adding new npc ${newNpc.id} ${newNpc.name}`);
@@ -122,6 +123,29 @@ export default class MJSocket {
             }
         });
 
+        this.socket.on("attackNpc", (data) => {
+            let json = JSON.parse(data);
 
+            let npcPawnCode = json.launchId;
+            let targetId = json.targetId;
+            let targetIsNpc = json.targetIsNpc;
+            let skill = new Skill(json.skill.id, json.skill.name, json.skill.manaCost, json.skill.range, json.skill.maxTarget, json.skill.type, json.skill.statModifier, json.skill.healing, json.skill.image);
+            // aplly the effects
+            var modifiedLife = this.game.gameSocket.applySkillNpc(targetId, targetIsNpc, skill);
+
+            // send changement
+            if (targetIsNpc){
+                console.log(`Npc ${npcPawnCode} attack npc ${targetId} and set is life to ${modifiedLife}`)
+                this.socket.emit("updateInfoNpc", {pawnCode:targetId, variable:"life", value:modifiedLife});
+                this.game.tableSocket?.socket.emit("updateNpcInfo", {pawnCode:targetId, variable:"life", value:modifiedLife});
+
+            }
+            else{
+                console.log(`Npc ${npcPawnCode} attack player ${targetId} and set is life to ${modifiedLife}`)
+                this.socket.emit("updateInfoCharacter", {playerId:targetId, variable:"life", value:modifiedLife});
+                this.game.tableSocket?.socket.emit("updateInfoCharacter", {playerId:targetId, variable:"life", value:modifiedLife});
+                this.game.gameSocket.findPlayerSocket(targetId)?.socket.emit("updateInfoCharacter", {variable:"life", value:modifiedLife});
+            }
+        })
     }
 }

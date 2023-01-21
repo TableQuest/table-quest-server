@@ -127,6 +127,47 @@ export default class GameSocket{
         console.log(`Entity ${targetId}'s ${targetCharacter.name} now has ${targetCharacter.life} HP.`)
     }
 
+    /**
+     * Affect the target of an npc attacker depending on the stat of the skill
+     */
+    applySkillNpc(targetId: string, isTargetNpc:boolean, skill:SkillInterface){
+        if (isTargetNpc) // the target is a npc
+        {
+            let targetNpc = this.game.npcTable.find( n => ( n.pawnCode == targetId))
+            
+            if (targetNpc != undefined){
+                if (skill.healing){
+                    targetNpc.setLife(targetNpc.life + skill.statModifier);
+                    return targetNpc.life;
+                }
+                else{
+                    targetNpc.setLife(targetNpc.life - skill.statModifier);
+                    return targetNpc.life;
+                }
+            }
+            else{
+                console.log("Didn't find npc "+targetId);
+                console.log(this.game.npcTable);
+                return null;
+            }
+
+        }
+        else // the target is a character
+        {
+            let targetCharacter = this.game.getPlayer(targetId)!.character;
+            if (skill.healing){
+                targetCharacter.setLife(targetCharacter.life + skill.statModifier);
+                return targetCharacter.life;
+            }
+            else {
+                targetCharacter.setLife(targetCharacter.life - skill.statModifier);
+                return targetCharacter.life;
+            }
+        }
+
+
+    }
+
     findPlayerSocket(id: string) {
         return this.game.playerSockets.find(p => p.player.id === id);
     }

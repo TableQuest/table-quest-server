@@ -52,10 +52,11 @@ export default class PlayerSocket {
                         "character": this.player.character
                     });
                 }
-                this.game.tableSocket?.socket?.emit("updateInfoCharacter",{ playerId:character.id, variable:"life", value:character.life});
-                this.game.tableSocket?.socket?.emit("updateInfoCharacter",{ playerId:character.id, variable:"lifeMax", value:character.lifeMax});
-                this.game.tableSocket?.socket?.emit("updateInfoCharacter",{ playerId:character.id, variable:"mana", value:character.mana});
-                this.game.tableSocket?.socket?.emit("updateInfoCharacter",{ playerId:character.id, variable:"manaMax", value:character.manaMax});
+                this.game.tableSocket?.socket?.emit("characterSelection",{ playerId:this.player.id, character:this.player.character.name});
+                this.game.tableSocket?.socket?.emit("updateInfoCharacter",{ playerId:this.player.id, variable:"life", value:character.life});
+                this.game.tableSocket?.socket?.emit("updateInfoCharacter",{ playerId:this.player.id, variable:"lifeMax", value:character.lifeMax});
+                this.game.tableSocket?.socket?.emit("updateInfoCharacter",{ playerId:this.player.id, variable:"mana", value:character.mana});
+                this.game.tableSocket?.socket?.emit("updateInfoCharacter",{ playerId:this.player.id, variable:"manaMax", value:character.manaMax});
             }
             else {
                 console.error(`No characters of id ${id} exists.`);

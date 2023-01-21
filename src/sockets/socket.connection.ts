@@ -77,7 +77,7 @@ export default class ConnectionSocket {
             this.game.updatePlayerSocket(socket, playerId);
             console.log(`The player ${playerId} already exists, updated its socket to ${socket.id} successfully.`);
             this.game.disconnectedPlayer.splice(this.game.disconnectedPlayer.indexOf(playerId), 1);
-            console.log(`${this.game.disconnectedPlayer} players are still off.`);
+            console.log(`${this.game.disconnectedPlayer.length} players are still off.`);
 
             if (this.game.disconnectedPlayer.length === 0)
             {

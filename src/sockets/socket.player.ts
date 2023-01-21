@@ -70,7 +70,7 @@ export default class PlayerSocket {
 
             let listOfPlayerIdsAsString: string = this.game.getDisconnectedPlayerIdAsString();
             this.game.tableSocket.socket.emit("pauseGame", listOfPlayerIdsAsString);
-            console.log(`Waiting for ${this.game.disconnectedPlayer} players.`);
+            console.log(`Waiting for players ${listOfPlayerIdsAsString}.`);
         });
     }
 }

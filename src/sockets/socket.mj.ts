@@ -123,9 +123,6 @@ export default class MJSocket {
             }
         });
 
-
-        });
-
         this.socket.on("attackNpc", (data) => {
             let json = JSON.parse(data);
 

@@ -64,30 +64,34 @@ export default class GameSocket{
         let targetSocketPlayer = this.findPlayerSocket(targetId);
         let targetNpc = this.game.npcTable.find(n => n.pawncode === targetId)
 
-        console.log("Try using skill");
-        if (this.isSkillUsable(playerCharacter, skill, targetId) && this.game.turnOrder.isPlayerTurn(playerId)) {
-            console.log("skill usable");
+        if (this.isSkillUsable(playerCharacter, skill, targetId) && this.game.turnOrder.isPlayerTurn(playerId))
+        {
             this.applySkill(playerCharacter, skill!, targetId);
             this.game.turnOrder.checkIfTargetDead(targetId);
             let characterLife = targetSocketPlayer == null ? targetNpc!.life : targetSocketPlayer!.player.character.life;
-            //doublon avec les appels de la méthode sendToSockets en dessous
-            if(targetSocketPlayer != null) {
+
+            if(targetSocketPlayer != null)
+            {
                 this.updateInfoCharacter(targetId,"life",characterLife.toString())
                 this.updateInfoCharacter(playerId,"mana",playerSocket!.player.character.mana.toString())
                 this.updateInfoCharacter(targetId,"life",characterLife.toString())
+
                 this.sendToSockets("updateInfoCharacter", {
                         playerId: targetId,
                         variable: "life",
                         value: characterLife
                     },
                     [this.game.mjSocket.socket, targetSocketPlayer!.socket]);
+
                 this.sendToSockets("updateInfoCharacter", {
                         playerId: playerId,
                         variable: "mana",
                         value: playerSocket!.player.character.mana
                     },
                     [this.game.mjSocket.socket, playerSocket!.socket]);
-            } else {
+            }
+            else
+            {
                 console.log("THE ID is : " + targetId)
                 this.updateInfoNpc(targetId,"life",characterLife.toString());
                 this.updateInfoCharacter(playerId,"mana",playerSocket!.player.character.mana.toString());
@@ -134,7 +138,7 @@ export default class GameSocket{
         if (isTargetNpc) // the target is a npc
         {
             let targetNpc = this.game.npcTable.find( n => ( n.pawnCode == targetId))
-            
+
             if (targetNpc != undefined){
                 if (skill.healing){
                     targetNpc.setLife(targetNpc.life + skill.statModifier);

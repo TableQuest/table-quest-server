@@ -17,6 +17,7 @@ import Npc from "./npc";
 import Player from "./player";
 import TurnOrder from "../game/TurnOrder";
 import DiceManager from "../game/DiceManager";
+import Logger from "./logger";
 
 export enum GameState {
     INIT,
@@ -56,6 +57,7 @@ export default class Game {
     previousGameState: GameState;
     turnOrder: TurnOrder;
     diceManager: DiceManager;
+    logger: Logger;
 
     constructor(app: App, io: Server, express: Express) {
         this.app = app;
@@ -80,6 +82,7 @@ export default class Game {
         this.disconnectedPlayer = [];
         this.turnOrder = new TurnOrder(this);
         this.diceManager = new DiceManager(this);
+        this.logger = new Logger(this);
 
         /* Sockets */
         this.mjSocket = new MJSocket(this, io);

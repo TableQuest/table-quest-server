@@ -52,7 +52,7 @@ export default class PlayerSocket {
                         "character": this.player.character
                     });
                 }
-                this.game.tableSocket?.socket?.emit("characterSelection",{ player:this.player.id, character:this.player.character});
+                this.game.tableSocket?.socket?.emit("characterSelection",{ playerId:this.player.id, character:this.player.character.name});
                 this.game.tableSocket?.socket?.emit("updateInfoCharacter",{ playerId:this.player.id, variable:"life", value:character.life});
                 this.game.tableSocket?.socket?.emit("updateInfoCharacter",{ playerId:this.player.id, variable:"lifeMax", value:character.lifeMax});
                 this.game.tableSocket?.socket?.emit("updateInfoCharacter",{ playerId:this.player.id, variable:"mana", value:character.mana});

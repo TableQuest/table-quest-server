@@ -39,11 +39,10 @@ export default class GameSocket{
             npc?.updateInfo(variable, value);
 
             // emit to the table
-            this.game.tableSocket?.socket?.emit("updateInfoNpc", { "pawnCode":pawnCode, "variable":variable, "value":value });
+            this.game.tableSocket?.socket?.emit("updateInfoNpc", { "playerId":pawnCode, "variable":variable, "value":value });
 
             // emit to the mj
             this.game.mjSocket?.socket.emit("updateInfoNpc", JSON.stringify({ "pawnCode":pawnCode, "variable":variable, "value":value }));
-
         }
 
     }
@@ -73,16 +72,9 @@ export default class GameSocket{
             let characterLife = targetSocketPlayer == null ? targetNpc!.life : targetSocketPlayer!.player.character.life;
             //doublon avec les appels de la méthode sendToSockets en dessous
             if(targetSocketPlayer != null) {
-                this.game.mjSocket.socket?.emit("updateInfoCharacter", {
-                    playerId: targetId,
-                    variable: "life",
-                    value: characterLife
-                });
-                this.game.mjSocket.socket?.emit("updateInfoCharacter", {
-                    playerId: playerId,
-                    variable: "mana",
-                    value: playerSocket!.player.character.mana
-                });
+                this.updateInfoCharacter(targetId,"life",characterLife.toString())
+                this.updateInfoCharacter(playerId,"mana",playerSocket!.player.character.mana.toString())
+                this.updateInfoCharacter(targetId,"life",characterLife.toString())
                 this.sendToSockets("updateInfoCharacter", {
                         playerId: targetId,
                         variable: "life",
@@ -96,16 +88,9 @@ export default class GameSocket{
                     },
                     [this.game.mjSocket.socket, playerSocket!.socket]);
             } else {
-                this.game.mjSocket.socket?.emit("updateInfoNpc", {
-                    pawnCode: targetId,
-                    variable: "life",
-                    value: characterLife
-                });
-                this.game.mjSocket.socket?.emit("updateInfoCharacter", {
-                    playerId: playerId,
-                    variable: "mana",
-                    value: playerSocket!.player.character.mana
-                });
+                console.log("THE ID is : " + targetId)
+                this.updateInfoNpc(targetId,"life",characterLife.toString());
+                this.updateInfoCharacter(playerId,"mana",playerSocket!.player.character.mana.toString());
             }
         }
     }

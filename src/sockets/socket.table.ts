@@ -79,6 +79,10 @@ export default class TableSocket {
         this.socket.on("newNpc", (data) => {
             if (this.game.newNpc !== undefined){
                 this.game.newNpc.pawncode = data;
+                console.log("J'ENVOIE")
+                this.game.gameSocket.updateInfoNpc(data, "lifeMax", this.game.newNpc.lifeMax.toString())
+                this.game.tableSocket?.socket?.emit("updateInfoNpc", { "playerId":data, "variable":"lifeMax", "value":this.game.newNpc.lifeMax.toString()});
+                this.game.tableSocket?.socket?.emit("updateInfoNpc", { "playerId":data, "variable":"life", "value":this.game.newNpc.life.toString()});
 
                 console.log(`Associate ${this.game.newNpc.name} ${this.game.newNpc.id} with the tabgible ${this.game.newNpc.pawncode}`);
                 
@@ -88,7 +92,6 @@ export default class TableSocket {
                 }
                 this.game.npcTable.push(this.game.newNpc);
                 this.game.newNpc = undefined;
-
             }
         });
 

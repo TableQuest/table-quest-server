@@ -1,5 +1,5 @@
 import {Server, Socket} from "socket.io";
-import Game, {GameState} from "../models/game";
+import Game from "../models/game";
 
 
 /**
@@ -111,11 +111,8 @@ export default class TableSocket {
         this.socket.on("skillDice", (data) => {
            let json = JSON.parse(data);
 
-
            if (json.playerId !== undefined && json.diceId !== undefined && json.value !== undefined && json.targetValue !== undefined) {
-               if(this.game.gameSocket.pendingSkill !== undefined
-                   && ((this.game.gameState == GameState.TURN_ORDER && this.game.turnOrder.getCurrentEntity().pawncode === json.playerId)
-                        || this.game.gameState != GameState.TURN_ORDER)) {
+               if (this.game.turnOrder.getCurrentEntity().pawncode === json.playerId && this.game.gameSocket.pendingSkill !== undefined) {
                    console.log("Using skill apply !")
                    if (json.value >= json.targetValue) {
                        console.log("Player had success on his dice roll !");

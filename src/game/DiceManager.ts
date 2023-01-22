@@ -31,8 +31,8 @@ export default class DiceManager {
         let dice = this.getDiceByValue(diceId);
 
         this.game.logger.log(
-            entity.image,
-            entity.name,
+            entity?.image,
+            entity?.name,
             `Roll a D20 dice and did ${value}`
         ).sendToEveryone();
 

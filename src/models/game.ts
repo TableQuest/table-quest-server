@@ -140,19 +140,15 @@ export default class Game {
 
     getEntityById(entityId: string) {
         let entity = undefined;
-        console.log("Try finding an entity with the id "+entityId);
         this.playerSockets.forEach(playerSocket => {
             if (playerSocket.player.character.pawncode === entityId) {
                 entity = playerSocket.player.character;
-                console.log(`Found the entity : ${entity.name}`);
             }
         });
 
         this.npcTable.forEach(n => {
-            console.log(`in Npc loop : ${n.name} ${n.pawncode} compared to : ${entityId}`);
             if (n.pawncode === entityId) {
                 entity = n;
-                console.log(`Found the entity : ${entity.name}`);
             }
         });
         return entity;

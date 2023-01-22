@@ -3,9 +3,11 @@ import {Socket} from "socket.io";
 import SkillInterface from "../models/interfaces/SkillInterface";
 import CharacterInterface from "../models/interfaces/CharacterInterface";
 import Character from "../models/character";
+import PendingSkill from "../game/PendingSkill";
 export default class GameSocket{
 
     game: Game;
+    pendingSkill: PendingSkill | undefined;
 
     constructor(game: Game){
         this.game = game;
@@ -61,41 +63,48 @@ export default class GameSocket{
         let playerSocket = this.game.gameSocket.findPlayerSocket(playerId);
         let playerCharacter = playerSocket!.player.character;
         let skill = playerCharacter.getSkill(skillId);
-        let targetSocketPlayer = this.findPlayerSocket(targetId);
-        let targetNpc = this.game.npcTable.find(n => n.pawncode === targetId)
 
         if (this.isSkillUsable(playerCharacter, skill, targetId) && this.game.turnOrder.isPlayerTurn(playerId))
         {
-            this.applySkill(playerCharacter, skill!, targetId);
-            this.game.turnOrder.checkIfTargetDead(targetId);
-            let characterLife = targetSocketPlayer == null ? targetNpc!.life : targetSocketPlayer!.player.character.life;
+            this.game.tableSocket?.socket.emit("skillDice", {
+                "playerId": playerId,
+                "skillName": skill!.name,
+                "targetValue": skill!.condition
+            });
 
-            if(targetSocketPlayer != null)
-            {
-                this.updateInfoCharacter(targetId,"life",characterLife.toString())
-                this.updateInfoCharacter(playerId,"mana",playerSocket!.player.character.mana.toString())
-                this.updateInfoCharacter(targetId,"life",characterLife.toString())
+            this.pendingSkill = new PendingSkill(this.game, playerId, targetId, skillId);
+            console.log(`Waiting for the player ${playerId} to validate the skill ${skill!.name}.`);
 
-                this.sendToSockets("updateInfoCharacter", {
-                        playerId: targetId,
-                        variable: "life",
-                        value: characterLife
-                    },
-                    [this.game.mjSocket.socket, targetSocketPlayer!.socket]);
-
-                this.sendToSockets("updateInfoCharacter", {
-                        playerId: playerId,
-                        variable: "mana",
-                        value: playerSocket!.player.character.mana
-                    },
-                    [this.game.mjSocket.socket, playerSocket!.socket]);
-            }
-            else
-            {
-                console.log("THE ID is : " + targetId)
-                this.updateInfoNpc(targetId,"life",characterLife.toString());
-                this.updateInfoCharacter(playerId,"mana",playerSocket!.player.character.mana.toString());
-            }
+            // this.applySkill(playerCharacter, skill!, targetId);
+            // this.game.turnOrder.checkIfTargetDead(targetId);
+            // let characterLife = targetSocketPlayer == null ? targetNpc!.life : targetSocketPlayer!.player.character.life;
+            //
+            // if(targetSocketPlayer != null)
+            // {
+            //     this.updateInfoCharacter(targetId,"life",characterLife.toString())
+            //     this.updateInfoCharacter(playerId,"mana",playerSocket!.player.character.mana.toString())
+            //     this.updateInfoCharacter(targetId,"life",characterLife.toString())
+            //
+            //     this.sendToSockets("updateInfoCharacter", {
+            //             playerId: targetId,
+            //             variable: "life",
+            //             value: characterLife
+            //         },
+            //         [this.game.mjSocket.socket, targetSocketPlayer!.socket]);
+            //
+            //     this.sendToSockets("updateInfoCharacter", {
+            //             playerId: playerId,
+            //             variable: "mana",
+            //             value: playerSocket!.player.character.mana
+            //         },
+            //         [this.game.mjSocket.socket, playerSocket!.socket]);
+            // }
+            // else
+            // {
+            //     console.log("THE ID is : " + targetId)
+            //     this.updateInfoNpc(targetId,"life",characterLife.toString());
+            //     this.updateInfoCharacter(playerId,"mana",playerSocket!.player.character.mana.toString());
+            // }
         }
     }
 

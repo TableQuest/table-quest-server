@@ -3,6 +3,7 @@ import Game, {GameState} from "../models/game";
 import MJ from "../models/mj";
 import Npc from "../models/npc";
 import Skill from "../models/skill";
+import Entity from "../models/entity";
 
 
 /**
@@ -38,6 +39,17 @@ export default class MJSocket {
             }
             else {
                 console.log("Cannot change characters info if the game hasn't started.");
+            }
+        })
+
+        this.socket.on("removeNpc", (data) => {
+            console.log("recieve remove NPC " + data)
+            let entity = this.game.getEntityById(data) as unknown as Entity;
+            if (entity !== undefined){
+                this.game.removeEntityById(data);
+                this.game.tableSocket.socket.emit("removeNpc",data)
+            } else {
+                console.log("Not found : can't remove NPC " + data)
             }
         })
 

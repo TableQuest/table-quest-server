@@ -4,22 +4,31 @@ import {Socket} from "socket.io";
 export default class Logger {
     game: Game;
     logs: Log[];
+    mjLogs: Log[];
 
     constructor(game: Game) {
         this.logs = [];
+        this.mjLogs = [];
         this.game = game;
     }
 
     log(imagePath: string, title: string, logText: string) : Log
     {
         let log = new Log(imagePath, title, logText, this.game);
-        if (this.logs.length >= 20)
-        {
-            this.logs.splice(0,1);
-        }
-        this.logs.push(log);
+        this.saveLog(this.logs, log);
+        this.saveLog(this.mjLogs, log);
+
         console.log(logText);
         return log;
+    }
+
+    private saveLog(logsArray: Log[], log: Log)
+    {
+        if (logsArray.length >= 20)
+        {
+            logsArray.splice(0,1);
+        }
+        logsArray.push(log);
     }
 }
 
@@ -61,5 +70,6 @@ export class Log {
             "title": this.title,
             "logText": this.logText
         }));
+        console.log("Finit d'envoyer le log");
     }
 }

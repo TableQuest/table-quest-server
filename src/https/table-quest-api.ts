@@ -2,6 +2,7 @@ import { Express } from 'express'
 import Game from '../models/game';
 
 import data from '../../data/game.json'
+import {Log} from "../models/logger";
 
 
 export default class TableQuestAPI {
@@ -80,5 +81,34 @@ export default class TableQuestAPI {
                     .send(JSON.stringify(playerChar.skills));
             }
         });
+
+        this.app.get('/logs', (req, res) =>{
+            let logs: Log[] = this.game.logger.logs;
+            let logList = new Array<Object>;
+
+            for (const log of logs) {
+                logList.push({
+                    "imagePath": log.imagePath,
+                    "title": log.title,
+                    "logText": log.logText
+                });
+            }
+            res.status(200).send(JSON.stringify({"listOfLogs": logList}));
+        })
+
+        this.app.get('/mjLogs', (req, res) =>{
+            let mjLogs: Log[] = this.game.logger.mjLogs;
+            let logList = new Array<Object>;
+
+            for (const log of mjLogs) {
+                logList.push({
+                    "imagePath": log.imagePath,
+                    "title": log.title,
+                    "logText": log.logText
+                });
+            }
+
+            res.status(200).send(JSON.stringify({"listOfLogs": logList}));
+        })
     }
 }

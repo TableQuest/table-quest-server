@@ -18,10 +18,10 @@
                     "range": 1,
                     "maxTarget": 1,
                     "type": "PHYSICAL",
-                    "statModifier": 3,
+                    "statModifier": 20,
                     "healing": false,
                     "image": "Images/Axe",
-                    "condition": 15
+                    "condition": 8
                 },
                 {
                     "id": 1,
@@ -30,10 +30,10 @@
                     "range": 4,
                     "maxTarget": 4,
                     "type": "PHYSICAL",
-                    "statModifier": 0,
+                    "statModifier": 25,
                     "healing": false,
                     "image": "Images/EarthQuake",
-                    "condition": 12
+                    "condition": 10
                 },
                 {
                     "id": 2,
@@ -42,10 +42,10 @@
                     "range": 1,
                     "maxTarget": 1,
                     "type": "MENTAL",
-                    "statModifier": 2,
+                    "statModifier": 25,
                     "healing": true,
                     "image": "Images/Healing",
-                    "condition": 14
+                    "condition": 12
                 }
             ]
         },
@@ -67,22 +67,22 @@
                     "range": 1,
                     "maxTarget": 1,
                     "type": "PHYSICAL",
-                    "statModifier": 2,
+                    "statModifier": 15,
                     "healing": false,
                     "image": "Images/Dagger",
-                    "condition": 15
+                    "condition": 10
                 },
                 {
                     "id": 4,
                     "name": "Bow",
                     "manaCost": 0,
-                    "range": 10,
+                    "range": 5,
                     "maxTarget": 1,
                     "type": "PHYSICAL",
-                    "statModifier": 1,
+                    "statModifier": 20,
                     "healing": false,
                     "image": "Images/Bow",
-                    "condition": 13
+                    "condition": 8
                 },
                 {
                     "id": 5,
@@ -91,10 +91,10 @@
                     "range": 1,
                     "maxTarget": 1,
                     "type": "MENTAL",
-                    "statModifier": 2,
+                    "statModifier": 25,
                     "healing": true,
                     "image": "Images/Healing",
-                    "condition": 18
+                    "condition": 12
                 }
             ]
         }

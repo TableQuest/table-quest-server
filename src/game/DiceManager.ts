@@ -30,6 +30,12 @@ export default class DiceManager {
 
         let dice = this.getDiceByValue(diceId);
 
+        this.game.logger.log(
+            entity.image,
+            entity.name,
+            `Roll a D20 dice and did ${value}`
+        ).sendToEveryone();
+
         if (this.game.gameState === GameState.INIT_TURN_ORDER && dice === Dice.D20 && entity !== undefined && !this.game.turnOrder.isInOrder(entity)) {
             this.game.turnOrder.addEntity(entity, value);
             console.log(`Player ${entity.pawncode} is trow a die and did ${value} !`);

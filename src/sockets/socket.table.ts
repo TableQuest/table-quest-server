@@ -116,10 +116,19 @@ export default class TableSocket {
                    console.log("Using skill apply !")
                    if (json.value >= json.targetValue) {
                        console.log("Player had success on his dice roll !");
+                       this.game.logger.log(
+                           this.game.turnOrder.getCurrentEntity().image,
+                           this.game.turnOrder.getCurrentEntity().name,
+                           `Roll a D20 dice and did ${json.value}, success !`
+                       ).sendToEveryone();
                        this.game.gameSocket.pendingSkill.apply();
                    }
                    else {
-                       console.log("Player missed his dice roll !");
+                       this.game.logger.log(
+                           this.game.turnOrder.getCurrentEntity().image,
+                           this.game.turnOrder.getCurrentEntity().name,
+                           `Roll a D20 dice and did ${json.value}, failure...`
+                       ).sendToEveryone();
                    }
                }
                this.game.gameSocket.pendingSkill = undefined;

@@ -3,6 +3,7 @@ import Game, {GameState} from "../models/game";
 import MJ from "../models/mj";
 import Npc from "../models/npc";
 import Skill from "../models/skill";
+import Entity from "../models/entity";
 
 
 /**
@@ -41,6 +42,17 @@ export default class MJSocket {
             }
         })
 
+        this.socket.on("removeNpc", (data) => {
+            console.log("recieve remove NPC " + data)
+            let entity = this.game.getEntityById(data) as unknown as Entity;
+            if (entity !== undefined){
+                this.game.removeEntityById(data);
+                this.game.tableSocket.socket.emit("removeNpc",data)
+            } else {
+                console.log("Not found : can't remove NPC " + data)
+            }
+        })
+
         this.socket.on("updateInfoNpc", (data) => {
             console.log("update npc info " + data);
             if (!this.game.verifyGameState(GameState.INIT)) {
@@ -57,20 +69,38 @@ export default class MJSocket {
                 case "FREE":
                     this.game.updateGameState(GameState.FREE);
                     this.game.tableSocket?.socket?.emit("switchState", "FREE");
+                    this.game.gameSocket.sendHelp(
+                        "",
+                        `The game is now in ${GameState[this.game.gameState]} mode`,
+                        "",
+                        false
+                    );
                     break;
                 case "RESTRICTED":
                     this.game.updateGameState(GameState.RESTRICTED);
                     this.game.tableSocket?.socket?.emit("switchState", "RESTRICTED");
-
+                    this.game.gameSocket.sendHelp(
+                        "",
+                        `The game is now in ${GameState[this.game.gameState]} mode`,
+                        "",
+                        false
+                    );
                     break;
                 case "INIT_TURN_ORDER":
                     this.game.updateGameState(GameState.INIT_TURN_ORDER);
                     this.game.tableSocket?.socket.emit("switchState", "INIT_TURN_ORDER");
                     this.game.turnOrder.initOrder();
+                    this.game.gameSocket.sendHelp(
+                        "",
+                        "You must roll your initiative dice !",
+                        "",
+                        false
+                    );
                     break;
                 default:
                     console.log(`State ${data} not recognized.`);
             }
+
             this.game.logger.log("Images/information", "Game State", `GameState is now ${GameState[this.game.gameState]}`)
                 .sendToEveryone();
         })

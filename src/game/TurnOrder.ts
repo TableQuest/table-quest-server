@@ -75,6 +75,13 @@ export default class TurnOrder {
             console.log("Turn Order Error : the length of the list send to the server is not equal to the order list !");
         }
         console.table(list);
+        let entity = this.orderList[this.currentEntityTurnIndex];
+        this.game.gameSocket.sendHelp(
+            "It is your turn to play !",
+            `It is the turn of ${entity.name} to play !`,
+            entity.pawncode,
+            true
+        );
         this.game.tableSocket?.socket.emit("turnOrder", {"list": list});
     }
 
@@ -102,12 +109,20 @@ export default class TurnOrder {
     }
 
     next() {
+
         this.currentEntityTurnIndex++;
         if (this.currentEntityTurnIndex >= this.orderList.length) this.currentEntityTurnIndex = 0;
         this.game.tableSocket?.socket.emit("turnOrderNext", {});
-        this.game.logger.log(this.orderList[this.currentEntityTurnIndex].image,
+        let entity = this.orderList[this.currentEntityTurnIndex];
+        this.game.gameSocket.sendHelp(
+            "It is your turn to play !",
+            `It is the turn of ${entity.name} to play !`,
+            entity.pawncode,
+            true
+        );
+        this.game.logger.log(entity.image,
             "Game",
-            `It is ${this.orderList[this.currentEntityTurnIndex].name}'s turn.`)
+            `It is ${entity.name}'s turn.`)
             .sendToEveryone();
     }
 

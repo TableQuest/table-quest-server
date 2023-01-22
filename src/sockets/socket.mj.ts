@@ -57,20 +57,38 @@ export default class MJSocket {
                 case "FREE":
                     this.game.updateGameState(GameState.FREE);
                     this.game.tableSocket?.socket?.emit("switchState", "FREE");
+                    this.game.gameSocket.sendHelp(
+                        "",
+                        `The game is now in ${GameState[this.game.gameState]} mode`,
+                        "",
+                        false
+                    );
                     break;
                 case "RESTRICTED":
                     this.game.updateGameState(GameState.RESTRICTED);
                     this.game.tableSocket?.socket?.emit("switchState", "RESTRICTED");
-
+                    this.game.gameSocket.sendHelp(
+                        "",
+                        `The game is now in ${GameState[this.game.gameState]} mode`,
+                        "",
+                        false
+                    );
                     break;
                 case "INIT_TURN_ORDER":
                     this.game.updateGameState(GameState.INIT_TURN_ORDER);
                     this.game.tableSocket?.socket.emit("switchState", "INIT_TURN_ORDER");
                     this.game.turnOrder.initOrder();
+                    this.game.gameSocket.sendHelp(
+                        "",
+                        "You must roll your initiative dice !",
+                        "",
+                        false
+                    );
                     break;
                 default:
                     console.log(`State ${data} not recognized.`);
             }
+
             this.game.logger.log("Images/information", "Game State", `GameState is now ${GameState[this.game.gameState]}`)
                 .sendToEveryone();
         })

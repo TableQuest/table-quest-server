@@ -1,4 +1,4 @@
-import Game from "../models/game";
+import Game, {GameState} from "../models/game";
 import {Socket} from "socket.io";
 import SkillInterface from "../models/interfaces/SkillInterface";
 import CharacterInterface from "../models/interfaces/CharacterInterface";
@@ -71,7 +71,12 @@ export default class GameSocket{
                 "skillName": skill!.name,
                 "targetValue": skill!.condition
             });
-
+            this.game.gameSocket.sendHelp(
+                `You must roll a dice to use ${skill!.name} !`,
+                "",
+                playerId,
+                false
+            );
             this.pendingSkill = new PendingSkill(this.game, playerId, targetId, skillId);
             console.log(`Waiting for the player ${playerId} to validate the skill ${skill!.name}.`);
 
@@ -197,5 +202,21 @@ export default class GameSocket{
         }
     }
 
+    public sendHelp(message: string, everyone: string, playerId: string, isTurn: boolean) {
+        for (var playerSocket of this.game.playerSockets) {
+            if (playerSocket.player.pawnCode === playerId) {
+                playerSocket.socket.emit("helpTurn", {
+                    "isTurn": isTurn,
+                    "text": message
+                });
+            }
+            else if (everyone != "") {
+                playerSocket.socket.emit("helpTurn", {
+                    "isTurn": false,
+                    "text": everyone
+                });
+            }
+        }
+    }
 
 }

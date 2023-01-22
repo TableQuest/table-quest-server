@@ -40,6 +40,7 @@ export default class TurnOrder {
         }
         entity.diceVal = diceValue;
         this.orderList.splice(index, 0, entity);
+        this.orderList.reverse()
         this.removeEntityTbd(entity);
     }
 

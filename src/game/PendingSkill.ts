@@ -27,17 +27,13 @@ export default class PendingSkill {
         let skill = playerCharacter.getSkill(this.skillId);
         let targetSocketPlayer = this.game.gameSocket.findPlayerSocket(this.targetId);
         let targetNpc = this.game.npcTable.find(n => n.pawncode === this.targetId);
-
         this.game.gameSocket.applySkill(playerCharacter, skill!, this.targetId);
-        this.game.turnOrder.checkIfTargetDead(this.targetId);
         let characterLife = targetSocketPlayer == null ? targetNpc!.life : targetSocketPlayer!.player.character.life;
-
         if(targetSocketPlayer != null)
         {
             this.game.gameSocket.updateInfoCharacter(this.targetId,"life",characterLife.toString())
             this.game.gameSocket.updateInfoCharacter(this.playerId,"mana",playerSocket!.player.character.mana.toString())
             this.game.gameSocket.updateInfoCharacter(this.targetId,"life",characterLife.toString())
-
             this.game.gameSocket.sendToSockets("updateInfoCharacter", {
                     playerId: this.targetId,
                     variable: "life",
@@ -61,5 +57,6 @@ export default class PendingSkill {
 
         console.log("attackLaunch");
         this.game.tableSocket.socket.emit("attackLaunch",skill?.healing);
+        this.game.turnOrder.checkIfTargetDead(this.targetId);
     }
 }

@@ -149,7 +149,41 @@
             "life": 100,
             "description": "Ogres are famous for their strength but not their intellect.",  
             "image":"Images/Ogre", 
-            "skills":[]
+            "skills":[
+                {
+                    "id": 100,
+                    "name": "Personalized",
+                    "manaCost": 0,
+                    "range": 100,
+                    "maxTarget": 100,
+                    "type": "NULL",
+                    "statModifier": 5,
+                    "healing": true,
+                    "image": "Images/Healing"
+                },
+                {
+                    "id": 100,
+                    "name": "Heal",
+                    "manaCost": 0,
+                    "range": 100,
+                    "maxTarget": 100,
+                    "type": "NULL",
+                    "statModifier": 10,
+                    "healing": true,
+                    "image": "Images/Healing"
+                },
+                {
+                    "id": 100,
+                    "name": "Simple Attack",
+                    "manaCost": 0,
+                    "range": 100,
+                    "maxTarget": 1,
+                    "type": "NULL",
+                    "statModifier": 10,
+                    "healing": false,
+                    "image": "Images/Dagger"
+                }
+            ]
         }
     ]
 }

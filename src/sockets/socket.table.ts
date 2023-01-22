@@ -116,11 +116,12 @@ export default class TableSocket {
                    && ((this.game.gameState == GameState.TURN_ORDER && this.game.turnOrder.getCurrentEntity().pawncode === json.playerId)
                        || this.game.gameState != GameState.TURN_ORDER)) {
 
+                   let entity = this.game.getEntity(json.playerId);
                    console.log("Using skill apply !")
                    if (json.value >= json.targetValue) {
                        console.log("Player had success on his dice roll !");
                        this.game.logger.log(
-                           "Information",
+                           entity!.image,
                            json.playerId,
                            `Roll a D20 dice and did ${json.value}, success !`
                        ).sendToEveryone();
@@ -128,7 +129,7 @@ export default class TableSocket {
                    }
                    else {
                        this.game.logger.log(
-                           "Information",
+                           entity!.image,
                            json.playerId,
                            `Roll a D20 dice and did ${json.value}, failure...`
                        ).sendToEveryone();

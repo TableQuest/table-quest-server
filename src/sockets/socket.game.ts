@@ -149,7 +149,7 @@ export default class GameSocket{
         else {
             targetCharacter.setLife(targetCharacter.life - skill.statModifier);
             this.game.logger.log(caster.image, caster.name,
-                `Used ${skill.name} and healed ${skill.statModifier} HP to ${targetCharacter.name}! It cost ${skill.manaCost} MP.`,
+                `Used ${skill.name} and dealt ${skill.statModifier} of damage to ${targetCharacter.name}! It cost ${skill.manaCost} MP.`,
             ).sendToEveryone();
         }
         console.log(`Entity ${targetId}'s ${targetCharacter.name} now has ${targetCharacter.life} HP.`)

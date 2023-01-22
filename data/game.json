@@ -20,7 +20,8 @@
                     "type": "PHYSICAL",
                     "statModifier": 3,
                     "healing": false,
-                    "image": "Images/Axe"
+                    "image": "Images/Axe",
+                    "condition": 15
                 },
                 {
                     "id": 1,
@@ -31,7 +32,8 @@
                     "type": "PHYSICAL",
                     "statModifier": 0,
                     "healing": false,
-                    "image": "Images/EarthQuake"
+                    "image": "Images/EarthQuake",
+                    "condition": 12
                 },
                 {
                     "id": 2,
@@ -42,7 +44,8 @@
                     "type": "MENTAL",
                     "statModifier": 2,
                     "healing": true,
-                    "image": "Images/Healing"
+                    "image": "Images/Healing",
+                    "condition": 14
                 }
             ]
         },
@@ -66,7 +69,8 @@
                     "type": "PHYSICAL",
                     "statModifier": 2,
                     "healing": false,
-                    "image": "Images/Dagger"
+                    "image": "Images/Dagger",
+                    "condition": 15
                 },
                 {
                     "id": 4,
@@ -77,7 +81,8 @@
                     "type": "PHYSICAL",
                     "statModifier": 1,
                     "healing": false,
-                    "image": "Images/Bow"
+                    "image": "Images/Bow",
+                    "condition": 13
                 },
                 {
                     "id": 5,
@@ -88,7 +93,8 @@
                     "type": "MENTAL",
                     "statModifier": 2,
                     "healing": true,
-                    "image": "Images/Healing"
+                    "image": "Images/Healing",
+                    "condition": 18
                 }
             ]
         }

@@ -128,7 +128,7 @@ export default class MJSocket {
             let npcPawnCode = json.launchId;
             let targetId = json.targetId;
             let targetIsNpc = json.targetIsNpc;
-            let skill = new Skill(json.skill.id, json.skill.name, json.skill.manaCost, json.skill.range, json.skill.maxTarget, json.skill.type, json.skill.statModifier, json.skill.healing, json.skill.image);
+            let skill = new Skill(json.skill.id, json.skill.name, json.skill.manaCost, json.skill.range, json.skill.maxTarget, json.skill.type, json.skill.statModifier, json.skill.healing, json.skill.image, json.skill.condition);
             // aplly the effects
             var modifiedLife = this.game.gameSocket.applySkillNpc(targetId, targetIsNpc, skill);
 

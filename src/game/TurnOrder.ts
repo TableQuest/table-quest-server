@@ -40,7 +40,6 @@ export default class TurnOrder {
         }
         entity.diceVal = diceValue;
         this.orderList.splice(index, 0, entity);
-        console.log(`Adding the entity to the position ${index} to the order list !`);
         this.removeEntityTbd(entity);
     }
 
@@ -63,13 +62,11 @@ export default class TurnOrder {
         for (let entity of this.orderList) {
             if (this.game.isNpcPlacedExist(entity.pawncode)) {
                 list.push(entity.pawncode);
-                console.log("Sending to server : npc "+entity.pawncode)
                 continue;
             }
             for (let playerS of this.game.playerSockets) {
                 if (playerS.player.pawnCode === entity.pawncode) {
                     list.push(playerS.player.id);
-                    console.log("Sending to server : player "+playerS.player.id);
                 }
             }
         }
@@ -123,6 +120,19 @@ export default class TurnOrder {
         else {
             console.log(`Error : Entity ${targetId} not found !`);
         }
+    }
+
+    isInOrder(entity: Entity) {
+        for (let e of this.orderList) {
+            if (e.pawncode === entity.pawncode) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    getCurrentEntity() {
+        return this.orderList[this.currentEntityTurnIndex];
     }
 }
 

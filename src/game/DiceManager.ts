@@ -15,6 +15,7 @@ enum Dice {
 export default class DiceManager {
     private game: Game;
 
+    currentPlayerIdTryingSkill: string;
 
     constructor(game: Game) {
         this.game = game;
@@ -29,11 +30,10 @@ export default class DiceManager {
 
         let dice = this.getDiceByValue(diceId);
 
-        if (this.game.gameState === GameState.INIT_TURN_ORDER && dice === Dice.D20 && entity !== undefined) {
+        if (this.game.gameState === GameState.INIT_TURN_ORDER && dice === Dice.D20 && entity !== undefined && !this.game.turnOrder.isInOrder(entity)) {
             this.game.turnOrder.addEntity(entity, value);
             console.log(`Player ${entity.pawncode} is trow a die and did ${value} !`);
         }
-
     }
 
     getDiceByValue(diceId: number) {

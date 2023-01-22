@@ -58,7 +58,7 @@ export default class GameSocket{
     Is called upon receiving the message "useSkill" from the Table socket.
     */
     tryUsingSkill(playerId: string, skillId: number, targetId: string) {
-        let playerSocket = this.game.gameSocket.findPlayerSocket(playerId);
+        let playerSocket = this.findPlayerSocket(playerId);
         let playerCharacter = playerSocket!.player.character;
         let skill = playerCharacter.getSkill(skillId);
         let targetSocketPlayer = this.findPlayerSocket(targetId);
@@ -97,6 +97,11 @@ export default class GameSocket{
                 this.updateInfoCharacter(playerId,"mana",playerSocket!.player.character.mana.toString());
             }
         }
+        else
+        {
+            this.game.logger.log("Images/information", "Information", "You cannot do this for now.")
+                .sendTo(playerSocket!.socket);
+        }
     }
 
     /*
@@ -106,9 +111,8 @@ export default class GameSocket{
     */
     isSkillUsable(playerCharacter: Character, skill: SkillInterface | undefined, targetId: string) {
         if (skill == undefined) {
-            let errorMessage = `Character ${playerCharacter.id} does not have that skill.`;
-            console.log(errorMessage);
-            this.sendToSockets("errorMessage", errorMessage, [this.game.tableSocket.socket, this.game.mjSocket.socket]);
+            this.game.logger.log("Images/error", "Error", `Character ${playerCharacter.id} does not have that skill.`)
+                .sendTo(this.game.mjSocket.socket);
             return false;
         }
         return ((this.game.isPlayerExist(targetId) || this.game.isNpcExist(targetId)) && playerCharacter.hasEnoughMana(skill))
@@ -128,11 +132,13 @@ export default class GameSocket{
         else {
             targetCharacter.setLife(targetCharacter.life - skill.statModifier);
         }
+        this.game.logger.log(caster.image, "Information", `${caster.name} dealt ${skill.statModifier} damage to ${targetCharacter.name}`)
+            .sendToEveryone();
         console.log(`Entity ${targetId}'s ${targetCharacter.name} now has ${targetCharacter.life} HP.`)
     }
 
     /**
-     * Affect the target of an npc attacker depending on the stat of the skill
+     * Affect the target of a npc attacker depending on the stat of the skill
      */
     applySkillNpc(targetId: string, isTargetNpc:boolean, skill:SkillInterface){
         if (isTargetNpc) // the target is a npc

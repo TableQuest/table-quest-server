@@ -117,6 +117,8 @@ export default class TurnOrder {
             console.log(`Entity ${entity.name} is dead !`);
             this.removeEntity(entity);
             this.game.removeEntityById(targetId);
+            this.game.mjSocket.socket.emit("deathNpc", targetId);
+            this.game.tableSocket.socket.emit("deathNpc", targetId);
         }
         else {
             console.log(`Error : Entity ${targetId} not found !`);

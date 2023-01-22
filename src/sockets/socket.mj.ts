@@ -145,6 +145,7 @@ export default class MJSocket {
                 this.game.tableSocket?.socket.emit("updateInfoCharacter", {playerId:targetId, variable:"life", value:modifiedLife});
                 this.game.gameSocket.findPlayerSocket(targetId)?.socket.emit("updateInfoCharacter", {variable:"life", value:modifiedLife});
             }
+            this.game.tableSocket?.socket?.emit("npcAttack", String(skill.healing));
         })
     }
 }

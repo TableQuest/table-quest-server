@@ -32,7 +32,7 @@ export default class GameSocket{
     }
 
     public updateInfoNpc(pawnCode: string, variable: string, value:string){
-        let npc = this.game.npcTable.find(n => n.pawncode = pawnCode);
+        let npc = this.game.npcTable.find(n => n.pawncode == pawnCode);
 
         if (npc){
             console.log("pawnCode "+ pawnCode+" variable "+variable+" value "+value);

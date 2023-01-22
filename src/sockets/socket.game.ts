@@ -142,12 +142,16 @@ export default class GameSocket{
         //could be moved to Skill class, not sure as it would make it more annoying to read
         if (skill.healing) {
             targetCharacter.setLife(targetCharacter.life + skill.statModifier);
+            this.game.logger.log(caster.image, caster.name,
+                `Used ${skill.name} and healed ${skill.statModifier} HP to ${targetCharacter.name}! It cost ${skill.manaCost} MP.`
+            ).sendToEveryone();
         }
         else {
             targetCharacter.setLife(targetCharacter.life - skill.statModifier);
+            this.game.logger.log(caster.image, caster.name,
+                `Used ${skill.name} and healed ${skill.statModifier} HP to ${targetCharacter.name}! It cost ${skill.manaCost} MP.`,
+            ).sendToEveryone();
         }
-        this.game.logger.log(caster.image, "Information", `${caster.name} dealt ${skill.statModifier} damage to ${targetCharacter.name}`)
-            .sendToEveryone();
         console.log(`Entity ${targetId}'s ${targetCharacter.name} now has ${targetCharacter.life} HP.`)
     }
 

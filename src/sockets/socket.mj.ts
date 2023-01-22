@@ -56,13 +56,11 @@ export default class MJSocket {
             switch (data) {
                 case "FREE":
                     this.game.updateGameState(GameState.FREE);
-                    console.log("GameState is now "+this.game.gameState);
                     this.game.tableSocket?.socket?.emit("switchState", "FREE");
                     break;
                 case "RESTRICTED":
                     this.game.updateGameState(GameState.RESTRICTED);
                     this.game.tableSocket?.socket?.emit("switchState", "RESTRICTED");
-                    console.log("GameState is now "+this.game.gameState);
 
                     break;
                 case "INIT_TURN_ORDER":

@@ -58,5 +58,8 @@ export default class PendingSkill {
             this.game.gameSocket.updateInfoNpc(this.targetId,"life",characterLife.toString());
             this.game.gameSocket.updateInfoCharacter(this.playerId,"mana",playerSocket!.player.character.mana.toString());
         }
+
+        console.log("attackLaunch");
+        this.game.tableSocket.socket.emit("attackLaunch",skill?.healing);
     }
 }

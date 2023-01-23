@@ -31,16 +31,16 @@ export default class TurnOrder {
 
     addEntity(entity: Entity, diceValue: number) {
         console.log(`Adding entity ${entity.name} with id ${entity.pawncode} !`)
-        let index = 0;
-        for (let i = 0; i < this.orderList.length; i++) {
+        let index = this.orderList.length-1;
+        for (let i = this.orderList.length-1; i >= 0; i--) {
             let e = this.orderList[i];
             if (diceValue >= e.diceVal) {
                 index = i;
             }
         }
         entity.diceVal = diceValue;
-        this.orderList.splice(index+1, 0, entity);
-        console.log(`Adding the entity to the position ${index+1} to the order list !`);
+        this.orderList.splice(index, 0, entity);
+        this.orderList.reverse()
         this.removeEntityTbd(entity);
     }
 
@@ -51,8 +51,9 @@ export default class TurnOrder {
             this.game.updateGameState(GameState.TURN_ORDER);
             this.currentEntityTurnIndex = 0;
             console.log(`All players and npc did their speed throw for the turn order. Let's fight !`);
-            console.log("Game State is now TURN_ORDER");
-            this.game.tableSocket?.socket.emit("switchState", "INIT_TURN_ORDER");
+            this.game.logger.log("Images/information", "Game State", `GameState is now ${GameState[this.game.gameState]}`)
+                .sendToEveryone();
+            this.game.tableSocket?.socket.emit("switchState", "TURN_ORDER");
             this.sendOrderList();
         }
     }
@@ -62,13 +63,11 @@ export default class TurnOrder {
         for (let entity of this.orderList) {
             if (this.game.isNpcPlacedExist(entity.pawncode)) {
                 list.push(entity.pawncode);
-                console.log("Sending to server : npc "+entity.pawncode)
                 continue;
             }
             for (let playerS of this.game.playerSockets) {
                 if (playerS.player.pawnCode === entity.pawncode) {
                     list.push(playerS.player.id);
-                    console.log("Sending to server : player "+playerS.player.id);
                 }
             }
         }
@@ -76,6 +75,13 @@ export default class TurnOrder {
             console.log("Turn Order Error : the length of the list send to the server is not equal to the order list !");
         }
         console.table(list);
+        let entity = this.orderList[this.currentEntityTurnIndex];
+        this.game.gameSocket.sendHelp(
+            "It is your turn to play !",
+            `It is the turn of ${entity.name} to play !`,
+            entity.pawncode,
+            true
+        );
         this.game.tableSocket?.socket.emit("turnOrder", {"list": list});
     }
 
@@ -103,10 +109,21 @@ export default class TurnOrder {
     }
 
     next() {
+
         this.currentEntityTurnIndex++;
         if (this.currentEntityTurnIndex >= this.orderList.length) this.currentEntityTurnIndex = 0;
-        console.log(`Turn Order : Current Turn : ${this.orderList[this.currentEntityTurnIndex].name}`);
         this.game.tableSocket?.socket.emit("turnOrderNext", {});
+        let entity = this.orderList[this.currentEntityTurnIndex];
+        this.game.gameSocket.sendHelp(
+            "It is your turn to play !",
+            `It is the turn of ${entity.name} to play !`,
+            entity.pawncode,
+            true
+        );
+        this.game.logger.log(entity.image,
+            "Game",
+            `It is ${entity.name}'s turn.`)
+            .sendToEveryone();
     }
 
     checkIfTargetDead(targetId: string) {
@@ -119,6 +136,19 @@ export default class TurnOrder {
         else {
             console.log(`Error : Entity ${targetId} not found !`);
         }
+    }
+
+    isInOrder(entity: Entity) {
+        for (let e of this.orderList) {
+            if (e.pawncode === entity.pawncode) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    getCurrentEntity() {
+        return this.orderList[this.currentEntityTurnIndex];
     }
 }
 

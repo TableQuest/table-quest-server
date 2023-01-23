@@ -7,14 +7,12 @@ export default class Character extends Entity implements CharacterInterface{
     manaMax: number;
     mana: number;
     speed: number;
-    skills: SkillInterface[];
 
     constructor(id: number, name: string, lifeMax: number, life: number,manaMax: number, mana: number, description: string, speed: number, skills: SkillInterface[], image:string) {
-        super(id, name, life, lifeMax, description, image);
+        super(id, name, life, lifeMax, description, image, skills);
         this.manaMax = manaMax;
         this.mana = mana;
         this.speed = speed;
-        this.skills = skills;
     }
 
     hasEnoughMana(skill: SkillInterface) {
@@ -62,7 +60,7 @@ export default class Character extends Entity implements CharacterInterface{
                 } catch (error) {
                     console.log("ManaMax value not numerical")
                 }
-                break;         
+                break;
             case "speed":
                 try {
                     this.speed = Number(value);

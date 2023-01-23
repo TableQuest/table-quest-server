@@ -10,6 +10,7 @@ export default interface SkillInterface {
     statModifier: number;
     healing: boolean;
     image: string;
+    condition: number;
 
     applyEffect(target: Character): void;
 }

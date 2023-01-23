@@ -1,11 +1,13 @@
-import Game from "../models/game";
+import Game, {GameState} from "../models/game";
 import {Socket} from "socket.io";
 import SkillInterface from "../models/interfaces/SkillInterface";
 import CharacterInterface from "../models/interfaces/CharacterInterface";
 import Character from "../models/character";
+import PendingSkill from "../game/PendingSkill";
 export default class GameSocket{
 
     game: Game;
+    pendingSkill: PendingSkill | undefined;
 
     constructor(game: Game){
         this.game = game;
@@ -30,7 +32,7 @@ export default class GameSocket{
     }
 
     public updateInfoNpc(pawnCode: string, variable: string, value:string){
-        let npc = this.game.npcTable.find(n => n.pawncode = pawnCode);
+        let npc = this.game.npcTable.find(n => n.pawncode == pawnCode);
 
         if (npc){
             console.log("pawnCode "+ pawnCode+" variable "+variable+" value "+value);
@@ -39,11 +41,10 @@ export default class GameSocket{
             npc?.updateInfo(variable, value);
 
             // emit to the table
-            this.game.tableSocket?.socket?.emit("updateInfoNpc", { "pawnCode":pawnCode, "variable":variable, "value":value });
+            this.game.tableSocket?.socket?.emit("updateInfoNpc", { "playerId":pawnCode, "variable":variable, "value":value });
 
             // emit to the mj
             this.game.mjSocket?.socket.emit("updateInfoNpc", JSON.stringify({ "pawnCode":pawnCode, "variable":variable, "value":value }));
-
         }
 
     }
@@ -59,54 +60,61 @@ export default class GameSocket{
     Is called upon receiving the message "useSkill" from the Table socket.
     */
     tryUsingSkill(playerId: string, skillId: number, targetId: string) {
-        let playerSocket = this.game.gameSocket.findPlayerSocket(playerId);
+        let playerSocket = this.findPlayerSocket(playerId);
         let playerCharacter = playerSocket!.player.character;
         let skill = playerCharacter.getSkill(skillId);
-        let targetSocketPlayer = this.findPlayerSocket(targetId);
-        let targetNpc = this.game.npcTable.find(n => n.pawncode === targetId)
 
-        console.log("Try using skill");
-        if (this.isSkillUsable(playerCharacter, skill, targetId) && this.game.turnOrder.isPlayerTurn(playerId)) {
-            console.log("skill usable");
-            this.applySkill(playerCharacter, skill!, targetId);
-            this.game.turnOrder.checkIfTargetDead(targetId);
-            let characterLife = targetSocketPlayer == null ? targetNpc!.life : targetSocketPlayer!.player.character.life;
-            //doublon avec les appels de la méthode sendToSockets en dessous
-            if(targetSocketPlayer != null) {
-                this.game.mjSocket.socket?.emit("updateInfoCharacter", {
-                    playerId: targetId,
-                    variable: "life",
-                    value: characterLife
-                });
-                this.game.mjSocket.socket?.emit("updateInfoCharacter", {
-                    playerId: playerId,
-                    variable: "mana",
-                    value: playerSocket!.player.character.mana
-                });
-                this.sendToSockets("updateInfoCharacter", {
-                        playerId: targetId,
-                        variable: "life",
-                        value: characterLife
-                    },
-                    [this.game.mjSocket.socket, targetSocketPlayer!.socket]);
-                this.sendToSockets("updateInfoCharacter", {
-                        playerId: playerId,
-                        variable: "mana",
-                        value: playerSocket!.player.character.mana
-                    },
-                    [this.game.mjSocket.socket, playerSocket!.socket]);
-            } else {
-                this.game.mjSocket.socket?.emit("updateInfoNpc", {
-                    pawnCode: targetId,
-                    variable: "life",
-                    value: characterLife
-                });
-                this.game.mjSocket.socket?.emit("updateInfoCharacter", {
-                    playerId: playerId,
-                    variable: "mana",
-                    value: playerSocket!.player.character.mana
-                });
-            }
+        if (this.isSkillUsable(playerCharacter, skill, targetId) && this.game.turnOrder.isPlayerTurn(playerId))
+        {
+            this.game.tableSocket?.socket.emit("skillDice", {
+                "playerId": playerId,
+                "skillName": skill!.name,
+                "targetValue": skill!.condition
+            });
+            this.game.gameSocket.sendHelp(
+                `You must roll a dice to use ${skill!.name} !`,
+                "",
+                playerId,
+                false
+            );
+            this.pendingSkill = new PendingSkill(this.game, playerId, targetId, skillId);
+            console.log(`Waiting for the player ${playerId} to validate the skill ${skill!.name}.`);
+
+            // this.applySkill(playerCharacter, skill!, targetId);
+            // this.game.turnOrder.checkIfTargetDead(targetId);
+            // let characterLife = targetSocketPlayer == null ? targetNpc!.life : targetSocketPlayer!.player.character.life;
+            //
+            // if(targetSocketPlayer != null)
+            // {
+            //     this.updateInfoCharacter(targetId,"life",characterLife.toString())
+            //     this.updateInfoCharacter(playerId,"mana",playerSocket!.player.character.mana.toString())
+            //     this.updateInfoCharacter(targetId,"life",characterLife.toString())
+            //
+            //     this.sendToSockets("updateInfoCharacter", {
+            //             playerId: targetId,
+            //             variable: "life",
+            //             value: characterLife
+            //         },
+            //         [this.game.mjSocket.socket, targetSocketPlayer!.socket]);
+            //
+            //     this.sendToSockets("updateInfoCharacter", {
+            //             playerId: playerId,
+            //             variable: "mana",
+            //             value: playerSocket!.player.character.mana
+            //         },
+            //         [this.game.mjSocket.socket, playerSocket!.socket]);
+            // }
+            // else
+            // {
+            //     console.log("THE ID is : " + targetId)
+            //     this.updateInfoNpc(targetId,"life",characterLife.toString());
+            //     this.updateInfoCharacter(playerId,"mana",playerSocket!.player.character.mana.toString());
+            // }
+        }
+        else
+        {
+            this.game.logger.log("Images/information", "Information", "You cannot do this for now.")
+                .sendTo(playerSocket!.socket);
         }
     }
 
@@ -117,9 +125,8 @@ export default class GameSocket{
     */
     isSkillUsable(playerCharacter: Character, skill: SkillInterface | undefined, targetId: string) {
         if (skill == undefined) {
-            let errorMessage = `Character ${playerCharacter.id} does not have that skill.`;
-            console.log(errorMessage);
-            this.sendToSockets("errorMessage", errorMessage, [this.game.tableSocket.socket, this.game.mjSocket.socket]);
+            this.game.logger.log("Images/error", "Error", `Character ${playerCharacter.id} does not have that skill.`)
+                .sendTo(this.game.mjSocket.socket);
             return false;
         }
         return ((this.game.isPlayerExist(targetId) || this.game.isNpcExist(targetId)) && playerCharacter.hasEnoughMana(skill))
@@ -135,11 +142,58 @@ export default class GameSocket{
         //could be moved to Skill class, not sure as it would make it more annoying to read
         if (skill.healing) {
             targetCharacter.setLife(targetCharacter.life + skill.statModifier);
+            this.game.logger.log(caster.image, caster.name,
+                `Used ${skill.name} and healed ${skill.statModifier} HP to ${targetCharacter.name}! It cost ${skill.manaCost} MP.`
+            ).sendToEveryone();
         }
         else {
             targetCharacter.setLife(targetCharacter.life - skill.statModifier);
+            this.game.logger.log(caster.image, caster.name,
+                `Used ${skill.name} and dealt ${skill.statModifier} of damage to ${targetCharacter.name}! It cost ${skill.manaCost} MP.`,
+            ).sendToEveryone();
         }
         console.log(`Entity ${targetId}'s ${targetCharacter.name} now has ${targetCharacter.life} HP.`)
+    }
+
+    /**
+     * Affect the target of a npc attacker depending on the stat of the skill
+     */
+    applySkillNpc(targetId: string, isTargetNpc:boolean, skill:SkillInterface){
+        if (isTargetNpc) // the target is a npc
+        {
+            let targetNpc = this.game.npcTable.find( n => ( n.pawnCode == targetId))
+
+            if (targetNpc != undefined){
+                if (skill.healing){
+                    targetNpc.setLife(targetNpc.life + skill.statModifier);
+                    return targetNpc.life;
+                }
+                else{
+                    targetNpc.setLife(targetNpc.life - skill.statModifier);
+                    return targetNpc.life;
+                }
+            }
+            else{
+                console.log("Didn't find npc "+targetId);
+                console.log(this.game.npcTable);
+                return null;
+            }
+
+        }
+        else // the target is a character
+        {
+            let targetCharacter = this.game.getPlayer(targetId)!.character;
+            if (skill.healing){
+                targetCharacter.setLife(targetCharacter.life + skill.statModifier);
+                return targetCharacter.life;
+            }
+            else {
+                targetCharacter.setLife(targetCharacter.life - skill.statModifier);
+                return targetCharacter.life;
+            }
+        }
+
+
     }
 
     findPlayerSocket(id: string) {
@@ -152,5 +206,21 @@ export default class GameSocket{
         }
     }
 
+    public sendHelp(message: string, everyone: string, playerId: string, isTurn: boolean) {
+        for (var playerSocket of this.game.playerSockets) {
+            if (playerSocket.player.pawnCode === playerId) {
+                playerSocket.socket.emit("helpTurn", {
+                    "isTurn": isTurn,
+                    "text": message
+                });
+            }
+            else if (everyone != "") {
+                playerSocket.socket.emit("helpTurn", {
+                    "isTurn": false,
+                    "text": everyone
+                });
+            }
+        }
+    }
 
 }

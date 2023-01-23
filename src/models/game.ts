@@ -11,10 +11,13 @@ import gameJson from '../../data/game.json';
 import CharacterInterface from "./interfaces/CharacterInterface";
 import GameSocket from "../sockets/socket.game";
 import Character from "./character";
+import EntityInterface from "./interfaces/EntityInterface";
+import Entity from "./entity";
 import Npc from "./npc";
+import Player from "./player";
 import TurnOrder from "../game/TurnOrder";
 import DiceManager from "../game/DiceManager";
-import Entity from "./entity";
+import Logger from "./logger";
 
 export enum GameState {
     INIT,
@@ -50,10 +53,11 @@ export default class Game {
 
     /*Others*/
     gameState: GameState;
-    disconnectedPlayer: number;
+    disconnectedPlayer: string[];
     previousGameState: GameState;
     turnOrder: TurnOrder;
     diceManager: DiceManager;
+    logger: Logger;
 
     constructor(app: App, io: Server, express: Express) {
         this.app = app;
@@ -70,14 +74,15 @@ export default class Game {
         this.npc = [];
         for (let i=0; i<gameJson.npc.length; i++){
             let n = <Npc>JSON.parse(JSON.stringify(gameJson.npc[i]))
-            let objN = new Npc(n.id, n.name, n.lifeMax, n.life, n.description, n.image);
+            let objN = new Npc(n.id, n.name, n.lifeMax, n.life, n.description, n.image, n.skills);
             this.npc.push(objN);
         }
 
         this.newNpc = undefined;
-        this.disconnectedPlayer = 0;
+        this.disconnectedPlayer = [];
         this.turnOrder = new TurnOrder(this);
         this.diceManager = new DiceManager(this);
+        this.logger = new Logger(this);
 
         /* Sockets */
         this.mjSocket = new MJSocket(this, io);
@@ -115,10 +120,7 @@ export default class Game {
     isPlayerExist(playerId: string) {
         let playerExists = false;
 
-        console.log(`isPlayerExist ? : playerId ${playerId}`);
-
         this.playerSockets.forEach(playerSocket => {
-            console.log("isPlayerExist ? : player in loop : "+playerSocket.player.id);
             if (playerSocket.player.id === playerId) {
                 playerExists = true;
             }
@@ -138,19 +140,15 @@ export default class Game {
 
     getEntityById(entityId: string) {
         let entity = undefined;
-        console.log("Try finding an entity with the id "+entityId);
         this.playerSockets.forEach(playerSocket => {
             if (playerSocket.player.character.pawncode === entityId) {
                 entity = playerSocket.player.character;
-                console.log(`Found the entity : ${entity.name}`);
             }
         });
 
         this.npcTable.forEach(n => {
-            console.log(`in Npc loop : ${n.name} ${n.pawncode} compared to : ${entityId}`);
             if (n.pawncode === entityId) {
                 entity = n;
-                console.log(`Found the entity : ${entity.name}`);
             }
         });
         return entity;
@@ -168,6 +166,17 @@ export default class Game {
     pauseGame() {
         this.previousGameState = this.gameState;
         this.updateGameState(GameState.PAUSE);
+    }
+
+    getDisconnectedPlayerIdAsString()
+    {
+        let listOfPlayerIdsAsString: string = "";
+
+        for (let i = 0; i < this.disconnectedPlayer.length; i++)
+        {
+            listOfPlayerIdsAsString += this.disconnectedPlayer[i]+",";
+        }
+        return listOfPlayerIdsAsString.slice(0, -1);
     }
 
     getEntity(id: string)

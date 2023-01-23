@@ -2,6 +2,8 @@ import {Server, Socket} from "socket.io";
 import Game, {GameState} from "../models/game";
 import MJ from "../models/mj";
 import Npc from "../models/npc";
+import Skill from "../models/skill";
+import Entity from "../models/entity";
 
 
 /**
@@ -33,10 +35,21 @@ export default class MJSocket {
             if (!this.game.verifyGameState(GameState.INIT)) {
                 console.log("apply update info");
                 let json = JSON.parse(data);
-                this.game.gameSocket.updateInfoCharacter(json.playerId,json.variable, json.value);
+                    this.game.gameSocket.updateInfoCharacter(json.playerId,json.variable, json.value);
             }
             else {
                 console.log("Cannot change characters info if the game hasn't started.");
+            }
+        })
+
+        this.socket.on("removeNpc", (data) => {
+            console.log("recieve remove NPC " + data)
+            let entity = this.game.getEntityById(data) as unknown as Entity;
+            if (entity !== undefined){
+                this.game.removeEntityById(data);
+                this.game.tableSocket.socket.emit("removeNpc",data)
+            } else {
+                console.log("Not found : can't remove NPC " + data)
             }
         })
 
@@ -55,31 +68,48 @@ export default class MJSocket {
             switch (data) {
                 case "FREE":
                     this.game.updateGameState(GameState.FREE);
-                    console.log("GameState is now "+this.game.gameState);
                     this.game.tableSocket?.socket?.emit("switchState", "FREE");
+                    this.game.gameSocket.sendHelp(
+                        "",
+                        `The game is now in ${GameState[this.game.gameState]} mode`,
+                        "",
+                        false
+                    );
                     break;
                 case "RESTRICTED":
                     this.game.updateGameState(GameState.RESTRICTED);
                     this.game.tableSocket?.socket?.emit("switchState", "RESTRICTED");
-                    console.log("GameState is now "+this.game.gameState);
-
+                    this.game.gameSocket.sendHelp(
+                        "",
+                        `The game is now in ${GameState[this.game.gameState]} mode`,
+                        "",
+                        false
+                    );
                     break;
                 case "INIT_TURN_ORDER":
                     this.game.updateGameState(GameState.INIT_TURN_ORDER);
                     this.game.tableSocket?.socket.emit("switchState", "INIT_TURN_ORDER");
                     this.game.turnOrder.initOrder();
+                    this.game.gameSocket.sendHelp(
+                        "",
+                        "You must roll your initiative dice !",
+                        "",
+                        false
+                    );
                     break;
                 default:
                     console.log(`State ${data} not recognized.`);
             }
-            console.log(`GameState is now ${GameState[this.game.gameState]}`);
+
+            this.game.logger.log("Images/information", "Game State", `GameState is now ${GameState[this.game.gameState]}`)
+                .sendToEveryone();
         })
 
         this.socket.on("playerMove", (data) => {
             console.log("Send to table move");
 
             this.game.tableSocket?.socket.emit("playerMove", data);
- 
+
         })
 
         this.socket.on("newNpc", (data) => {
@@ -89,7 +119,7 @@ export default class MJSocket {
             let npc = this.game.npc.find(char => char.id === id);
 
             if (npc !== undefined) {
-                let newNpc = new Npc(npc.id, name, npc.lifeMax, npc.life,npc.description, npc.image);
+                let newNpc = new Npc(npc.id, name, npc.lifeMax, npc.life,npc.description, npc.image, npc.skills);
                 this.game.newNpc = newNpc;
 
                 console.log(`Adding new npc ${newNpc.id} ${newNpc.name}`);
@@ -122,6 +152,30 @@ export default class MJSocket {
             }
         });
 
+        this.socket.on("attackNpc", (data) => {
+            let json = JSON.parse(data);
 
+            let npcPawnCode = json.launchId;
+            let targetId = json.targetId;
+            let targetIsNpc = json.targetIsNpc;
+            let skill = new Skill(json.skill.id, json.skill.name, json.skill.manaCost, json.skill.range, json.skill.maxTarget, json.skill.type, json.skill.statModifier, json.skill.healing, json.skill.image, json.skill.condition);
+            // aplly the effects
+            var modifiedLife = this.game.gameSocket.applySkillNpc(targetId, targetIsNpc, skill);
+
+            // send changement
+            if (targetIsNpc){
+                console.log(`Npc ${npcPawnCode} attack npc ${targetId} and set is life to ${modifiedLife}`)
+                this.socket.emit("updateInfoNpc", {pawnCode:targetId, variable:"life", value:modifiedLife});
+                this.game.tableSocket?.socket.emit("updateNpcInfo", {pawnCode:targetId, variable:"life", value:modifiedLife});
+
+            }
+            else{
+                console.log(`Npc ${npcPawnCode} attack player ${targetId} and set is life to ${modifiedLife}`)
+                this.socket.emit("updateInfoCharacter", {playerId:targetId, variable:"life", value:modifiedLife});
+                this.game.tableSocket?.socket.emit("updateInfoCharacter", {playerId:targetId, variable:"life", value:modifiedLife});
+                this.game.gameSocket.findPlayerSocket(targetId)?.socket.emit("updateInfoCharacter", {variable:"life", value:modifiedLife});
+            }
+            this.game.tableSocket?.socket?.emit("npcAttack", String(skill.healing));
+        })
     }
 }
